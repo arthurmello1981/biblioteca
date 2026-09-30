@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minha Cinemateca</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+/* ============================================================
+   TORI BRAND SYSTEM
+   Primary:   #2A666E  (Pantone 7715 C 100%)
+   Tint:      #AAC6C8  (Pantone 7715 C 30%)
+   Green:     #C0E85F  (Pantone 2296 C)
+   Coral:     #F07F79  (Pantone 2029 C)
+   Gold:      #F0C068  (Pantone 228 C)
+   Font:      Bricolage Grotesque / Verdana (fallback)
+============================================================ */
+:root {
+  --tori-primary:   #2A666E;
+  --tori-tint:      #AAC6C8;
+  --tori-green:     #C0E85F;
+  --tori-coral:     #F07F79;
+  --tori-gold:      #F0C068;
+  --tori-dark:      #1a3f44;
+  --tori-darker:    #0f2528;
+  --bg:             #f4f7f7;
+  --surface:        #ffffff;
+  --surface2:       #edf3f3;
+  --border:         #d4e2e3;
+  --text:           #1a3f44;
+  --text-muted:     #5a8a8f;
+  --text-light:     #8ab4b8;
+  --radius:         12px;
+  --radius-sm:      8px;
+  --shadow:         0 2px 12px rgba(42,102,110,0.08);
+  --shadow-md:      0 4px 24px rgba(42,102,110,0.12);
+  --font:           'Bricolage Grotesque', Verdana, sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed; left:0; top:0; bottom:0;
+  width: 220px;
+  background: var(--tori-darker);
+  display: flex; flex-direction: column;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.sidebar-logo {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid rgba(170,198,200,0.15);
+}
+
+.sidebar-logo .logo-mark {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 4px;
+}
+
+.logo-bulls {
+  display: flex; gap: 3px;
+}
+.logo-bull {
+  width: 18px; height: 14px;
+  background: var(--tori-tint);
+  border-radius: 2px 6px 2px 2px;
+  position: relative;
+  clip-path: polygon(0 30%, 15% 0, 40% 0, 40% 20%, 100% 0, 100% 100%, 0 100%);
+}
+.logo-bull:first-child { background: var(--tori-primary); opacity: 0.8; }
+
+.logo-name {
+  font-size: 22px; font-weight: 800; color: #fff;
+  letter-spacing: 3px;
+}
+.logo-sub {
+  font-size: 9px; color: var(--tori-tint);
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding-left: 2px;
+}
+
+.sidebar-label {
+  font-size: 9px; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--tori-tint);
+  opacity: 0.6; padding: 20px 24px 8px;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 24px;
+  color: rgba(255,255,255,0.55);
+  cursor: pointer;
+  font-size: 13px; font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.nav-item:hover { color: #fff; background: rgba(170,198,200,0.08); }
+.nav-item.active {
+  color: var(--tori-green);
+  border-left-color: var(--tori-green);
+  background: rgba(192,232,95,0.08);
+}
+.nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 20px 24px;
+  border-top: 1px solid rgba(170,198,200,0.12);
+  font-size: 11px; color: rgba(170,198,200,0.4);
+}
+
+/* ── MAIN ── */
+.main {
+  margin-left: 220px;
+  min-height: 100vh;
+}
+
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+}
+
+.topbar-title {
+  font-size: 15px; font-weight: 700; color: var(--tori-primary);
+  letter-spacing: 0.3px;
+}
+
+.search-wrap {
+  position: relative;
+}
+.search-input {
+  width: 280px; height: 36px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 0 16px 0 38px;
+  font-family: var(--font);
+  font-size: 13px; color: var(--text);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-input:focus { border-color: var(--tori-primary); background: #fff; }
+.search-icon {
+  position: absolute; left: 12px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-light); font-size: 14px;
+}
+
+.content { padding: 32px; }
+
+/* ── SECTION HEADERS ── */
+.section-header {
+  display: flex; align-items: baseline; gap: 12px;
+  margin-bottom: 24px;
+}
+.section-title {
+  font-size: 22px; font-weight: 800; color: var(--tori-primary);
+  letter-spacing: -0.5px;
+}
+.section-sub {
+  font-size: 13px; color: var(--text-muted); font-weight: 400;
+}
+
+/* ── STAT CARDS ── */
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  position: relative; overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+.stat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.stat-card.c1::before { background: var(--tori-primary); }
+.stat-card.c2::before { background: var(--tori-green); }
+.stat-card.c3::before { background: var(--tori-gold); }
+.stat-card.c4::before { background: var(--tori-coral); }
+
+.stat-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.stat-value {
+  font-size: 36px; font-weight: 800; color: var(--tori-primary);
+  line-height: 1; margin-bottom: 4px;
+  letter-spacing: -1px;
+}
+.stat-detail {
+  font-size: 12px; color: var(--text-muted);
+}
+
+/* ── CHARTS GRID ── */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+.charts-grid.three { grid-template-columns: 2fr 1fr; }
+
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.chart-title {
+  font-size: 13px; font-weight: 700; color: var(--tori-primary);
+  letter-spacing: 0.3px; margin-bottom: 4px;
+}
+.chart-sub { font-size: 11px; color: var(--text-muted); margin-bottom: 20px; }
+.chart-wrap { position: relative; }
+
+/* ── RANKING LISTS ── */
+.rank-list { list-style: none; }
+.rank-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.rank-item:last-child { border-bottom: none; }
+.rank-num {
+  font-size: 11px; font-weight: 700; color: var(--tori-tint);
+  width: 22px; text-align: right; flex-shrink: 0;
+}
+.rank-bar-wrap { flex: 1; }
+.rank-name {
+  font-size: 13px; font-weight: 500; color: var(--text);
+  margin-bottom: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rank-bar {
+  height: 4px; border-radius: 2px;
+  background: var(--tori-tint); opacity: 0.5;
+  transition: width 0.8s ease;
+}
+.rank-bar.fill-1 { background: var(--tori-primary); opacity: 1; }
+.rank-bar.fill-2 { background: var(--tori-primary); opacity: 0.8; }
+.rank-bar.fill-3 { background: var(--tori-primary); opacity: 0.65; }
+.rank-count {
+  font-size: 12px; font-weight: 700; color: var(--tori-primary);
+  flex-shrink: 0; min-width: 28px; text-align: right;
+}
+
+/* ── YEAR FILTERS ── */
+.filter-tabs {
+  display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;
+}
+.filter-tab {
+  padding: 6px 16px; border-radius: 20px;
+  font-family: var(--font); font-size: 12px; font-weight: 600;
+  cursor: pointer; border: 1.5px solid var(--border);
+  background: var(--surface); color: var(--text-muted);
+  transition: all 0.2s;
+}
+.filter-tab:hover { border-color: var(--tori-primary); color: var(--tori-primary); }
+.filter-tab.active {
+  background: var(--tori-primary); border-color: var(--tori-primary);
+  color: #fff;
+}
+
+/* ── BOOK TABLE ── */
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.table-header-row {
+  display: flex; align-items: center; gap: 0;
+  background: var(--tori-darker);
+  padding: 0 20px;
+}
+.th {
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--tori-tint);
+  padding: 12px 8px; cursor: pointer; user-select: none;
+  display: flex; align-items: center; gap: 4px;
+}
+.th:hover { color: #fff; }
+.th.sorted { color: var(--tori-green); }
+
+.col-num   { width: 40px; flex-shrink: 0; }
+.col-date  { width: 90px; flex-shrink: 0; }
+.col-title { flex: 1; min-width: 0; }
+.col-author{ width: 170px; flex-shrink: 0; }
+.col-genre { width: 130px; flex-shrink: 0; }
+.col-lang  { width: 90px; flex-shrink: 0; }
+.col-pages { width: 60px; flex-shrink: 0; text-align: right; }
+.col-year  { width: 55px; flex-shrink: 0; }
+
+.book-row {
+  display: flex; align-items: center; gap: 0;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background 0.15s;
+}
+.book-row:last-child { border-bottom: none; }
+.book-row:nth-child(even) { background: #fafcfc; }
+.book-row:hover { background: #edf6f6; }
+
+.td {
+  font-size: 13px; padding: 10px 8px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.td.col-num { color: var(--text-light); font-size: 11px; }
+.td.col-date { color: var(--text-muted); font-size: 12px; }
+.td.col-title { color: var(--tori-primary); font-weight: 600; }
+.td.col-pages { text-align: right; color: var(--text-muted); font-size: 12px; }
+.td.col-year { color: var(--text-muted); font-size: 12px; }
+
+.genre-badge {
+  display: inline-block;
+  padding: 2px 8px; border-radius: 10px;
+  font-size: 10px; font-weight: 600;
+  background: var(--surface2); color: var(--tori-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.pagination {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  font-size: 12px; color: var(--text-muted);
+}
+.page-btns { display: flex; gap: 4px; }
+.page-btn {
+  width: 32px; height: 32px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 13px; font-weight: 600;
+  border: 1.5px solid var(--border); background: var(--surface);
+  color: var(--text-muted); font-family: var(--font);
+  transition: all 0.15s;
+}
+.page-btn:hover { border-color: var(--tori-primary); color: var(--tori-primary); }
+.page-btn.active {
+  background: var(--tori-primary); border-color: var(--tori-primary);
+  color: #fff;
+}
+.page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(15,37,40,0.7); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius);
+  width: 520px; max-height: 90vh; overflow-y: auto;
+  transform: translateY(20px); transition: transform 0.2s;
+  box-shadow: 0 20px 60px rgba(15,37,40,0.3);
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-header {
+  background: var(--tori-darker);
+  padding: 24px 28px;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.modal-title {
+  font-size: 18px; font-weight: 800; color: #fff;
+  line-height: 1.3; margin-bottom: 4px;
+}
+.modal-orig {
+  font-size: 12px; color: var(--tori-tint); font-style: italic;
+}
+.modal-body { padding: 24px 28px; }
+.modal-row {
+  display: flex; gap: 8px;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.modal-row:last-child { border-bottom: none; }
+.modal-key {
+  font-weight: 600; color: var(--text-muted); font-size: 11px;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  width: 110px; flex-shrink: 0; padding-top: 1px;
+}
+.modal-val { color: var(--text); }
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,0.1); border: none;
+  color: #fff; font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font); transition: background 0.2s;
+}
+.modal-close:hover { background: rgba(255,255,255,0.2); }
+.modal-header { position: relative; }
+
+/* ── YEAR DETAIL SECTION ── */
+.year-cards {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px;
+  margin-bottom: 32px;
+}
+.year-card {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 12px;
+  text-align: center; cursor: pointer;
+  transition: all 0.2s;
+}
+.year-card:hover { border-color: var(--tori-primary); }
+.year-card.active {
+  border-color: var(--tori-primary);
+  background: var(--tori-primary); color: #fff;
+}
+.year-card.active .year-num { color: #fff; }
+.year-card.active .year-count { color: var(--tori-green); }
+.year-num { font-size: 16px; font-weight: 800; color: var(--tori-primary); }
+.year-count { font-size: 22px; font-weight: 800; color: var(--tori-primary); margin: 4px 0; }
+.year-label { font-size: 10px; color: var(--text-muted); }
+
+/* ── VIEWS ── */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ── HEATMAP ── */
+.heatmap-grid {
+  display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px;
+  margin-top: 12px;
+}
+.heatmap-month {
+  border-radius: 4px; height: 52px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 600;
+  transition: transform 0.15s;
+  cursor: default;
+}
+.heatmap-month:hover { transform: scale(1.05); }
+.heat-0 { background: var(--surface2); color: var(--text-light); }
+.heat-1 { background: #d4eaec; color: var(--tori-primary); }
+.heat-2 { background: #aac6c8; color: var(--tori-dark); }
+.heat-3 { background: #6fa8ac; color: #fff; }
+.heat-4 { background: var(--tori-primary); color: #fff; }
+.heat-5 { background: var(--tori-dark); color: var(--tori-green); }
+.hm-count { font-size: 18px; font-weight: 800; line-height: 1; }
+.hm-label { font-size: 9px; opacity: 0.8; margin-top: 2px; }
+
+/* ── LANGUAGE FLAGS / DOTS ── */
+.lang-dot {
+  display: inline-block; width: 8px; height: 8px;
+  border-radius: 50%; margin-right: 6px; flex-shrink: 0;
+}
+
+/* ── RESPONSIVE scrollable table ── */
+.table-scroll { overflow-x: auto; }
+
+/* ── EMPTY STATE ── */
+.empty {
+  text-align: center; padding: 48px;
+  color: var(--text-muted); font-size: 14px;
+}
+
+/* ── PROGRESS BAR ── */
+.progress-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 8px;
+}
+.progress-label { font-size: 12px; width: 110px; flex-shrink: 0; color: var(--text); }
+.progress-bar-bg {
+  flex: 1; height: 8px; border-radius: 4px;
+  background: var(--surface2); overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%; border-radius: 4px;
+  background: var(--tori-primary);
+  transition: width 0.8s ease;
+}
+.progress-count {
+  font-size: 12px; font-weight: 700; color: var(--tori-primary);
+  width: 28px; text-align: right;
+}
+
+
+/* === MOBILE RESPONSIVE === */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed; bottom: 0; left: 0; right: 0; top: auto;
+    width: 100%; height: 58px; flex-direction: row;
+    border-top: 1px solid rgba(170,198,200,0.2); z-index: 200;
+  }
+  .sidebar-logo, .sidebar-label, .sidebar-footer { display: none; }
+  .nav-item {
+    flex: 1; flex-direction: column; gap: 2px;
+    padding: 6px 4px; font-size: 9px; letter-spacing: 0;
+    border-left: none; border-top: 3px solid transparent;
+    justify-content: center; align-items: center;
+  }
+  .nav-item.active { border-top-color: var(--tori-green); border-left: none; background: rgba(192,232,95,0.08); }
+  .nav-icon { font-size: 20px; width: auto; }
+  .main { margin-left: 0; padding-bottom: 66px; }
+  .topbar { padding: 0 16px; }
+  .search-input { width: 170px; font-size: 12px; }
+  .content { padding: 16px; }
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .stat-value { font-size: 28px; }
+  .charts-grid, .charts-grid.three { grid-template-columns: 1fr !important; }
+  .year-cards { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .col-genre, .col-lang, .col-year, .col-pages { display: none; }
+  .table-header-row .th.col-genre,
+  .table-header-row .th.col-lang,
+  .table-header-row .th.col-year,
+  .table-header-row .th.col-pages { display: none; }
+  .section-title { font-size: 18px; }
+  .heatmap-grid { grid-template-columns: repeat(6, 1fr); }
+  .modal { width: 95vw; }
+}
+
+/* === FAB ADD BUTTON === */
+.fab {
+  position: fixed; bottom: 78px; right: 18px;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--tori-primary); color: #fff;
+  font-size: 28px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 150;
+  box-shadow: 0 4px 20px rgba(42,102,110,0.45);
+  border: none; font-family: var(--font);
+  transition: transform 0.2s, background 0.2s;
+}
+.fab:hover { transform: scale(1.08); background: var(--tori-dark); }
+@media (min-width: 769px) { .fab { bottom: 28px; } }
+
+/* === ADD MODAL === */
+.add-overlay {
+  position: fixed; inset: 0; z-index: 600;
+  background: rgba(15,37,40,0.75); backdrop-filter: blur(4px);
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s;
+}
+.add-overlay.open { opacity: 1; pointer-events: all; }
+.add-panel {
+  background: var(--surface); border-radius: 20px 20px 0 0;
+  width: 100%; max-width: 560px; padding: 24px 22px 36px;
+  transform: translateY(40px); transition: transform 0.25s;
+  max-height: 90vh; overflow-y: auto;
+}
+.add-overlay.open .add-panel { transform: translateY(0); }
+@media (min-width: 769px) {
+  .add-overlay { align-items: center; }
+  .add-panel { border-radius: 16px; }
+}
+.add-title { font-size: 16px; font-weight: 800; color: var(--tori-primary); margin-bottom: 2px; }
+.add-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 18px; }
+.f-group { margin-bottom: 14px; }
+.f-label { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+  color: var(--text-muted); display: block; margin-bottom: 5px; }
+.f-input {
+  width: 100%; height: 40px; border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 0 13px; font-family: var(--font); font-size: 13px;
+  color: var(--text); background: var(--bg); outline: none; transition: border-color 0.2s;
+}
+.f-input:focus { border-color: var(--tori-primary); background: #fff; }
+input[type="date"] { color-scheme: light; }
+.f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btn-add {
+  width: 100%; height: 44px; border-radius: 10px;
+  background: var(--tori-primary); border: none;
+  color: #fff; font-family: var(--font); font-size: 14px; font-weight: 700;
+  cursor: pointer; margin-top: 4px; transition: background 0.2s;
+}
+.btn-add:hover { background: var(--tori-dark); }
+.btn-add:disabled { opacity: 0.5; cursor: default; }
+.add-status { font-size: 12px; text-align: center; min-height: 18px; margin-top: 8px; color: var(--text-muted); }
+.add-status.ok { color: var(--tori-primary); font-weight: 600; }
+.add-status.err { color: var(--tori-coral); }
+.preview-box { background: var(--surface2); border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
+.preview-title { font-size: 14px; font-weight: 700; color: var(--tori-primary); margin-bottom: 2px; }
+.preview-meta { font-size: 11px; color: var(--text-muted); }
+.step-row { display: flex; align-items: center; gap: 8px; font-size: 11px;
+  color: var(--text-muted); padding: 6px 10px; background: var(--surface2);
+  border-radius: 6px; margin-bottom: 6px; }
+.step-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+.step-dot.spin { background: var(--tori-primary); animation: spin-pulse 1s infinite; }
+.step-dot.ok { background: var(--tori-green); }
+@keyframes spin-pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+
+/* === EXTRA MOBILE POLISH === */
+@media (max-width: 768px) {
+  /* bigger touch targets */
+  .book-row { min-height: 52px; }
+  .filter-tab { height: 36px; font-size: 13px; }
+  .page-btn { width: 38px; height: 38px; }
+  /* better topbar on mobile */
+  .topbar-title { font-size: 13px; }
+  /* remove hover effects on touch */
+  .stat-card:hover { transform: none; box-shadow: var(--shadow); }
+  /* year cards smaller */
+  .year-card { padding: 12px 8px; }
+  .year-count { font-size: 18px; }
+  .year-num { font-size: 13px; }
+  /* fab above nav bar */
+  .fab { bottom: 72px; }
+  /* pull-down add panel handle */
+  .add-panel::before {
+    content: ''; display: block;
+    width: 40px; height: 4px; border-radius: 2px;
+    background: var(--border); margin: 0 auto 16px;
+  }
+  /* date input larger on mobile */
+  input[type="date"].f-input { font-size: 16px !important; height: 48px; }
+  /* chart cards less padding */
+  .chart-card { padding: 16px 14px; }
+  .rank-item { padding: 6px 0; }
+}
+
+
+.seg{display:flex;gap:6px}
+.seg button{flex:1;height:40px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface);color:var(--text-muted);font-family:var(--font);font-weight:600;font-size:13px;cursor:pointer}
+.seg button.on{background:var(--tori-primary);border-color:var(--tori-primary);color:#fff}
+.seg button:focus-visible,.filter-tab:focus-visible,.btn-add:focus-visible{outline:2px solid var(--tori-green);outline-offset:2px}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo"><div class="logo-mark">
+    <span style="font-size:26px;">🎬</span>
+    <span class="logo-name" style="letter-spacing:1px;font-size:18px;">Cinemateca</span>
+  </div></div>
+  <div class="sidebar-label">Cinemateca</div>
+  <a class="nav-item active" onclick="showView('dashboard',this)"><span class="nav-icon">📊</span> Dashboard</a>
+  <a class="nav-item" onclick="showView('filmes',this)"><span class="nav-icon">🎞️</span> Filmes</a>
+  <a class="nav-item" onclick="showView('series',this)"><span class="nav-icon">📺</span> Séries</a>
+  <a class="nav-item" onclick="showView('diretores',this)"><span class="nav-icon">🎥</span> Diretores</a>
+  <a class="nav-item" onclick="showView('todos',this)"><span class="nav-icon">🗂️</span> Tudo</a>
+  <a class="nav-item" href="./"><span class="nav-icon">📚</span> Biblioteca</a>
+  <div class="sidebar-footer" id="sidebarFooter"></div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <span class="topbar-title" id="topbar-title">Dashboard</span>
+    <div class="search-wrap"><span class="search-icon">🔍</span>
+      <input type="text" class="search-input" placeholder="Buscar títulos, diretores..." oninput="onSearch(this.value)"></div>
+  </header>
+  <div class="content">
+
+    <div class="view active" id="view-dashboard">
+      <div class="section-header"><span class="section-title">Visão Geral</span><span class="section-sub" id="dash-sub"></span></div>
+      <div class="stats-grid">
+        <div class="stat-card c1"><div class="stat-label">Filmes</div><div class="stat-value" id="st-filmes">0</div><div class="stat-detail" id="st-filmes-d"></div></div>
+        <div class="stat-card c2"><div class="stat-label">Séries</div><div class="stat-value" id="st-series">0</div><div class="stat-detail" id="st-series-d"></div></div>
+        <div class="stat-card c3"><div class="stat-label">Horas de filme</div><div class="stat-value" id="st-horas">0</div><div class="stat-detail" id="st-horas-d"></div></div>
+        <div class="stat-card c4"><div class="stat-label">Inéditos</div><div class="stat-value" id="st-ined">0</div><div class="stat-detail" id="st-ined-d"></div></div>
+      </div>
+      <div class="charts-grid" style="grid-template-columns:1.4fr 1fr;margin-bottom:20px;">
+        <div class="chart-card"><div class="chart-title">Por Mês</div><div class="chart-sub">Filmes e séries registrados</div><div class="chart-wrap" style="height:200px"><canvas id="chMes"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Onde</div><div class="chart-sub">Cinema, streaming ou avião</div><div class="chart-wrap" style="height:200px"><canvas id="chVenue"></canvas></div></div>
+      </div>
+      <div class="charts-grid">
+        <div class="chart-card"><div class="chart-title">Gêneros</div><div class="chart-sub">Distribuição por categoria</div><div class="chart-wrap" style="height:220px"><canvas id="chGenero"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Mais Revistos</div><div class="chart-sub">Títulos vistos mais de uma vez</div><ul class="rank-list" id="rank-rewatch"></ul></div>
+      </div>
+    </div>
+
+    <div class="view" id="view-filmes">
+      <div class="section-header"><span class="section-title">Filmes</span><span class="section-sub" id="filmes-count"></span></div>
+      <div class="filter-tabs" id="filmes-years"></div>
+      <div class="table-wrap table-scroll">
+        <div class="table-header-row"><div class="th col-num">#</div><div class="th col-date">Data</div><div class="th col-title">Título</div><div class="th col-author">Diretor</div><div class="th col-genre">Gênero</div><div class="th col-lang">Onde</div><div class="th col-pages">Min</div><div class="th col-year">Ano</div></div>
+        <div id="filmes-tbody"></div>
+      </div>
+    </div>
+
+    <div class="view" id="view-series">
+      <div class="section-header"><span class="section-title">Séries</span><span class="section-sub" id="series-count"></span></div>
+      <div class="filter-tabs" id="series-years"></div>
+      <div class="table-wrap table-scroll">
+        <div class="table-header-row"><div class="th col-num">#</div><div class="th col-date">Data</div><div class="th col-title">Título</div><div class="th col-author">Criador</div><div class="th col-genre">Gênero</div><div class="th col-lang">Onde</div><div class="th col-pages">Temp.</div><div class="th col-year">Ano</div></div>
+        <div id="series-tbody"></div>
+      </div>
+    </div>
+
+    <div class="view" id="view-diretores">
+      <div class="section-header"><span class="section-title">Diretores</span><span class="section-sub">Quem mais aparece na coleção</span></div>
+      <div class="chart-card"><ul class="rank-list" id="rank-dir"></ul></div>
+    </div>
+
+    <div class="view" id="view-todos">
+      <div class="section-header"><span class="section-title">Tudo</span><span class="section-sub" id="todos-count"></span></div>
+      <div class="filter-tabs" id="todos-tipo"></div>
+      <div class="table-wrap table-scroll">
+        <div class="table-header-row"><div class="th col-num">#</div><div class="th col-date">Data</div><div class="th col-title">Título</div><div class="th col-author">Direção</div><div class="th col-genre">Tipo</div><div class="th col-lang">Onde</div><div class="th col-pages">Min/T</div><div class="th col-year">Ano</div></div>
+        <div id="todos-tbody"></div>
+      </div>
+      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="filter-tab" onclick="exportJSON()">Copiar entradas novas (JSON)</button>
+        <span class="add-status" id="export-status"></span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal"><div class="modal-header"><div class="modal-title" id="modal-title"></div><div class="modal-orig" id="modal-orig"></div><button class="modal-close" onclick="closeModal()">×</button></div>
+  <div class="modal-body" id="modal-body"></div></div>
+</div>
+
+<button class="fab" onclick="openAdd()" title="Adicionar">+</button>
+<div class="add-overlay" id="add-overlay" onclick="if(event.target===this)closeAdd()">
+  <div class="add-panel">
+    <div class="add-title">🎬 Adicionar</div>
+    <div class="add-sub">Filme ou série que você viu</div>
+    <div class="f-group"><label class="f-label">Tipo</label><div class="seg" id="seg-tipo"><button data-v="filme" class="on">Filme</button><button data-v="serie">Série</button></div></div>
+    <div class="f-group"><label class="f-label">Título *</label><input class="f-input" id="a-title"></div>
+    <div class="f-row">
+      <div class="f-group"><label class="f-label">Título original</label><input class="f-input" id="a-orig"></div>
+      <div class="f-group"><label class="f-label">Ano</label><input class="f-input" id="a-year" type="number" min="1890" max="2100"></div>
+    </div>
+    <div class="f-group" style="background:var(--tori-primary);border-radius:12px;padding:16px 14px;">
+      <label class="f-label" style="color:rgba(255,255,255,0.7);">Quando você viu? *</label>
+      <input class="f-input" id="a-date" type="date" style="background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.3);color:#fff;font-size:16px;height:48px;">
+    </div>
+    <div class="f-row">
+      <div class="f-group"><label class="f-label">Onde</label><div class="seg" id="seg-venue"><button data-v="cinema" class="on">Cinema</button><button data-v="stream">Stream</button><button data-v="aviao">Avião</button></div></div>
+      <div class="f-group"><label class="f-label">Primeira vez?</label><div class="seg" id="seg-first"><button data-v="1" class="on">Inédito</button><button data-v="0">Rever</button></div></div>
+    </div>
+    <div class="f-row">
+      <div class="f-group"><label class="f-label" id="lbl-dir">Diretor</label><input class="f-input" id="a-dir"></div>
+      <div class="f-group"><label class="f-label">Gênero</label><input class="f-input" id="a-genre"></div>
+    </div>
+    <div class="f-row">
+      <div class="f-group"><label class="f-label">País</label><input class="f-input" id="a-country"></div>
+      <div class="f-group"><label class="f-label">Com quem</label><input class="f-input" id="a-with" placeholder="Nomes, separados por vírgula"></div>
+    </div>
+    <div class="f-row">
+      <div class="f-group" id="g-platform" style="display:none"><label class="f-label">Plataforma</label><input class="f-input" id="a-platform" placeholder="Netflix, Max..."></div>
+    </div>
+    <div class="f-row" id="r-filme"><div class="f-group"><label class="f-label">Duração (min)</label><input class="f-input" id="a-runtime" type="number"></div></div>
+    <div class="f-row" id="r-serie" style="display:none">
+      <div class="f-group"><label class="f-label">Temporadas vistas</label><input class="f-input" id="a-seasons" placeholder="1-3 ou 1,2,4"></div>
+      <div class="f-group"><label class="f-label">Total de temporadas</label><input class="f-input" id="a-stotal" type="number"></div>
+    </div>
+    <button class="btn-add" onclick="saveAdd()">Salvar na Cinemateca</button>
+    <div class="add-status" id="add-status"></div>
+  </div>
+</div>
+<script>
+// Fonte canônica: edite este array à mão (mesmo modelo da Biblioteca).
+const MEDIA = [
+  {"id":1,"tipo":"filme","title":"Devoradores de Estrelas","original_title":"Project Hail Mary","year":2026,"director":"Phil Lord, Christopher Miller","date_watched":"20/03/2026","venue":"cinema","platform":"","first_watch":true,"runtime":"","seasons_watched":"","seasons_total":"","genre":"Ficção científica","country":"EUA"},
+  {"id":2,"tipo":"filme","title":"O Convite","original_title":"The Invite","year":2026,"director":"Olivia Wilde","date_watched":"15/07/2026","venue":"cinema","platform":"","first_watch":true,"runtime":107,"seasons_watched":"","seasons_total":"","genre":"Comédia","country":"EUA"},
+  {"id":3,"tipo":"filme","title":"A Odisseia","original_title":"The Odyssey","year":2026,"director":"Christopher Nolan","date_watched":"17/07/2026","venue":"cinema","platform":"","first_watch":true,"runtime":"","seasons_watched":"","seasons_total":"","genre":"Épico","country":"EUA/Reino Unido"},
+  {"id":4,"tipo":"filme","title":"Toy Story 5","original_title":"Toy Story 5","year":2026,"director":"Andrew Stanton","date_watched":"04/07/2026","venue":"cinema","platform":"","first_watch":true,"runtime":102,"seasons_watched":"","seasons_total":"","genre":"Animação","country":"EUA"},
+  {"id":5,"tipo":"filme","title":"Obsessão","original_title":"Obsession","year":2026,"director":"Curry Barker","date_watched":"14/09/2026","venue":"aviao","platform":"","first_watch":true,"runtime":"","seasons_watched":"","seasons_total":"","genre":"Terror","country":"EUA","with":""},
+  {"id":6,"tipo":"filme","title":"Pressure","original_title":"Pressure","year":2026,"director":"Anthony Maras","date_watched":"14/09/2026","venue":"aviao","platform":"","first_watch":true,"runtime":100,"seasons_watched":"","seasons_total":"","genre":"Guerra","country":"Reino Unido/França/EUA","with":""},
+  {"id":7,"tipo":"filme","title":"Vingadores: Ultimato Encore","original_title":"Avengers: Endgame – Encore","year":2019,"director":"Anthony Russo, Joe Russo","date_watched":"27/09/2026","venue":"cinema","platform":"","first_watch":false,"runtime":"","seasons_watched":"","seasons_total":"","genre":"Ação","country":"EUA","with":"Martin, Tito, Benjamin"}
+];
+
+const LS_KEY='tori_custom_media';
+let custom=[];
+try{ custom=JSON.parse(localStorage.getItem(LS_KEY)||'[]'); }catch(e){ custom=[]; }
+function persist(){ try{ localStorage.setItem(LS_KEY,JSON.stringify(custom)); }catch(e){} }
+function all(){ return MEDIA.concat(custom); }
+
+const esc=s=>(s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const parseD=s=>{ const [d,m,y]=s.split('/').map(Number); return new Date(y,m-1,d); };
+const yr=m=>parseD(m.date_watched).getFullYear();
+const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
+function count(arr,fn){ const o={}; arr.forEach(x=>{ const k=fn(x); if(k) o[k]=(o[k]||0)+1; }); return o; }
+const sortE=o=>Object.entries(o).sort((a,b)=>b[1]-a[1]);
+function parseSeasons(s){
+  const out=new Set();
+  String(s||'').split(',').forEach(p=>{ p=p.trim(); if(!p) return;
+    const r=p.split('-').map(x=>parseInt(x,10));
+    if(r.length===2&&!isNaN(r[0])&&!isNaN(r[1])){ for(let i=Math.min(r[0],r[1]);i<=Math.max(r[0],r[1]);i++) out.add(i); }
+    else if(!isNaN(r[0])) out.add(r[0]); });
+  return [...out].sort((a,b)=>a-b);
+}
+function seasonsLabel(m){ const s=parseSeasons(m.seasons_watched); if(!s.length) return '—';
+  const t=s.length===1?'T'+s[0]:'T'+s[0]+'–'+s[s.length-1];
+  return m.seasons_total?t+'/'+m.seasons_total:t; }
+const timesSeen=m=>all().filter(x=>norm(x.title)===norm(m.title)).length;
+
+const CH={}; const PAL=['#2A666E','#C0E85F','#F07F79','#F0C068','#AAC6C8','#1a3f44','#5a8a8f','#8ab4b8'];
+function mk(id,cfg){ if(CH[id]) CH[id].destroy(); const el=document.getElementById(id); if(el&&window.Chart) CH[id]=new Chart(el,cfg); }
+
+let q='', yF={filmes:'all',series:'all'}, tipoF='all';
+const TITLES={dashboard:'Dashboard',filmes:'Filmes',series:'Séries',diretores:'Diretores',todos:'Tudo'};
+function showView(v,el){
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+  if(el) el.classList.add('active');
+  document.getElementById('topbar-title').textContent=TITLES[v];
+  render(v); window.scrollTo(0,0);
+}
+function onSearch(t){ q=(t||'').trim().toLowerCase(); const v=document.querySelector('.view.active').id.slice(5); if(v==='dashboard'&&q){ showView('todos',document.querySelectorAll('.nav-item')[4]); } else render(v); }
+const match=m=>!q||(m.title+' '+m.original_title+' '+m.director+' '+m.genre+' '+m.platform+' '+(m.with||'')).toLowerCase().includes(q);
+function render(v){ ({dashboard:rDash,filmes:()=>rTable('filme'),series:()=>rTable('serie'),diretores:rDir,todos:rTodos})[v](); footer(); }
+function footer(){ const A=all(); const ys=A.map(yr); document.getElementById('sidebarFooter').textContent=A.length+' registros'+(A.length?' · '+(Math.min(...ys)===Math.max(...ys)?ys[0]:Math.min(...ys)+'–'+Math.max(...ys)):''); }
+
+function rDash(){
+  const A=all(), F=A.filter(m=>m.tipo==='filme'), S=A.filter(m=>m.tipo==='serie');
+  const ys=A.map(yr); document.getElementById('dash-sub').textContent=A.length?(Math.min(...ys)===Math.max(...ys)?ys[0]:Math.min(...ys)+' – '+Math.max(...ys)):'';
+  document.getElementById('st-filmes').textContent=F.length;
+  document.getElementById('st-filmes-d').textContent=F.filter(m=>m.venue==='cinema').length+' no cinema';
+  document.getElementById('st-series').textContent=S.length;
+  document.getElementById('st-series-d').textContent=S.reduce((a,m)=>a+parseSeasons(m.seasons_watched).length,0)+' temporadas';
+  const withRt=F.filter(m=>m.runtime!==''&&m.runtime!=null);
+  document.getElementById('st-horas').textContent=Math.round(withRt.reduce((a,m)=>a+Number(m.runtime),0)/60);
+  document.getElementById('st-horas-d').textContent=withRt.length+' de '+F.length+' com duração';
+  const ined=A.filter(m=>m.first_watch).length;
+  document.getElementById('st-ined').textContent=ined;
+  document.getElementById('st-ined-d').textContent=(A.length-ined)+' revisões';
+  const ms=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const cnt=t=>ms.map((_,i)=>A.filter(m=>m.tipo===t&&parseD(m.date_watched).getMonth()===i).length);
+  mk('chMes',{type:'bar',data:{labels:ms,datasets:[{label:'Filmes',data:cnt('filme'),backgroundColor:PAL[0],borderRadius:4},{label:'Séries',data:cnt('serie'),backgroundColor:PAL[1],borderRadius:4}]},options:{maintainAspectRatio:false,scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,ticks:{precision:0}}},plugins:{legend:{position:'bottom'}}}});
+  const v=count(A,m=>m.venue==='cinema'?'Cinema':m.venue==='aviao'?'Avião':'Streaming');
+  mk('chVenue',{type:'doughnut',data:{labels:Object.keys(v),datasets:[{data:Object.values(v),backgroundColor:Object.keys(v).map(k=>({Cinema:PAL[0],Streaming:PAL[3],'Avião':PAL[2]})[k])}]},options:{maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom'}}}});
+  const g=sortE(count(A,m=>m.genre));
+  mk('chGenero',{type:'bar',data:{labels:g.map(x=>x[0]),datasets:[{data:g.map(x=>x[1]),backgroundColor:PAL[0],borderRadius:4}]},options:{indexAxis:'y',maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{precision:0}},y:{grid:{display:false}}}}});
+  const rw={}; A.forEach(m=>{ const k=norm(m.title); rw[k]=rw[k]||{t:m.title,n:0}; rw[k].n++; });
+  const list=Object.values(rw).filter(x=>x.n>1).sort((a,b)=>b.n-a.n);
+  document.getElementById('rank-rewatch').innerHTML=list.length?rank(list.map(x=>[x.t,x.n])):'<li class="empty">Tudo inédito por enquanto</li>';
+}
+function rank(entries){ const mx=entries.length?entries[0][1]:1;
+  return entries.map((e,i)=>`<li class="rank-item"><span class="rank-num">${i+1}</span><span class="rank-name">${esc(e[0])}</span><div class="rank-bar-wrap"><div class="rank-bar" style="width:${e[1]/mx*100}%"></div></div><span class="rank-count">${e[1]}</span></li>`).join(''); }
+
+function tabs(elId,values,cur,cb){ document.getElementById(elId).innerHTML=values.map(([v,l])=>`<button class="filter-tab${v===cur?' active':''}" data-v="${v}">${l}</button>`).join('');
+  document.querySelectorAll('#'+elId+' .filter-tab').forEach(b=>b.onclick=()=>cb(b.dataset.v)); }
+function sortByDate(a){ return a.sort((x,y)=>parseD(y.date_watched)-parseD(x.date_watched)); }
+function row(m,i,cols){ return `<div class="book-row" style="cursor:pointer" onclick="openModal('${m._key}')"><div class="td col-num">${i+1}</div><div class="td col-date">${esc(m.date_watched.slice(0,5))}</div><div class="td col-title">${esc(m.title)}${m.first_watch?'':' <span class="genre-badge">rever</span>'}</div>${cols.map(c=>`<div class="td ${c[0]}">${c[1]}</div>`).join('')}</div>`; }
+function keyed(){ return all().map((m,i)=>Object.assign({_key:(i<MEDIA.length?'m':'c')+(i<MEDIA.length?i:i-MEDIA.length)},m)); }
+const where=m=>m.venue==='cinema'?'Cinema':m.venue==='aviao'?'Avião':(m.platform||'Stream');
+function rTable(t){
+  const key=t==='filme'?'filmes':'series'; const base=keyed().filter(m=>m.tipo===t);
+  const ys=[...new Set(base.map(yr))].sort();
+  tabs(key+'-years',[['all','Todos']].concat(ys.map(y=>[String(y),String(y)])),yF[key],v=>{yF[key]=v;rTable(t);});
+  const L=sortByDate(base.filter(m=>(yF[key]==='all'||String(yr(m))===yF[key])&&match(m)));
+  document.getElementById(key+'-count').textContent=L.length+(t==='filme'?' filmes':' séries');
+  document.getElementById(key+'-tbody').innerHTML=L.length?L.map((m,i)=>row(m,i,[['col-author',esc(m.director)],['col-genre',m.genre?`<span class="genre-badge">${esc(m.genre)}</span>`:''],['col-lang',esc(where(m))],['col-pages',t==='filme'?(m.runtime||'—'):seasonsLabel(m)],['col-year',m.year||'']])).join(''):'<div class="empty" style="padding:24px">Nada aqui ainda</div>';
+}
+function rTodos(){
+  tabs('todos-tipo',[['all','Tudo'],['filme','Filmes'],['serie','Séries'],['cinema','Cinema'],['stream','Stream'],['aviao','Avião']],tipoF,v=>{tipoF=v;rTodos();});
+  const L=sortByDate(keyed().filter(m=>(tipoF==='all'||m.tipo===tipoF||m.venue===tipoF)&&match(m)));
+  document.getElementById('todos-count').textContent=L.length+' registros';
+  document.getElementById('todos-tbody').innerHTML=L.map((m,i)=>row(m,i,[['col-author',esc(m.director)],['col-genre',m.tipo==='filme'?'Filme':'Série'],['col-lang',esc(where(m))],['col-pages',m.tipo==='filme'?(m.runtime||'—'):seasonsLabel(m)],['col-year',m.year||'']])).join('');
+}
+function rDir(){
+  const o={}; all().filter(match).forEach(m=>String(m.director||'').split(',').map(s=>s.trim()).filter(Boolean).forEach(d=>o[d]=(o[d]||0)+1));
+  const e=sortE(o); document.getElementById('rank-dir').innerHTML=e.length?rank(e):'<li class="empty">Sem diretores</li>';
+}
+function getByKey(k){ return k[0]==='m'?MEDIA[+k.slice(1)]:custom[+k.slice(1)]; }
+function openModal(k){
+  const m=getByKey(k);
+  document.getElementById('modal-title').textContent=m.title;
+  document.getElementById('modal-orig').textContent=m.original_title&&m.original_title!==m.title?m.original_title:'';
+  const rows=[['Tipo',m.tipo==='filme'?'Filme':'Série'],[m.tipo==='filme'?'Diretor':'Criador',m.director],['Ano',m.year],['Visto em',m.date_watched],['Onde',where(m)],['Primeira vez',m.first_watch?'Sim':'Não, revisão'],['Vezes que vi',timesSeen(m)+'x'],
+    m.tipo==='filme'?['Duração',m.runtime?m.runtime+' min':'—']:['Temporadas',seasonsLabel(m)],['Gênero',m.genre],['País',m.country],['Com quem',m.with]];
+  let html=rows.filter(r=>r[1]!==''&&r[1]!=null).map(r=>`<div class="modal-row"><div class="modal-key">${r[0]}</div><div class="modal-val">${esc(r[1])}</div></div>`).join('');
+  if(k[0]==='c') html+=`<div style="margin-top:14px"><button class="filter-tab" onclick="delCustom(${+k.slice(1)})">Remover este registro</button></div>`;
+  document.getElementById('modal-body').innerHTML=html;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(e){ if(!e||e.target.id==='modal-overlay') document.getElementById('modal-overlay').classList.remove('open'); }
+function delCustom(i){ if(!confirm('Remover?')) return; custom.splice(i,1); persist(); closeModal(); render(document.querySelector('.view.active').id.slice(5)); }
+
+const seg={tipo:'filme',venue:'cinema',first:'1'};
+function bindSeg(id,key,after){ document.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{ document.querySelectorAll('#'+id+' button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); seg[key]=b.dataset.v; after&&after(); }); }
+function syncForm(){ const s=seg.tipo==='serie';
+  document.getElementById('r-filme').style.display=s?'none':''; document.getElementById('r-serie').style.display=s?'':'none';
+  document.getElementById('lbl-dir').textContent=s?'Criador':'Diretor';
+  document.getElementById('g-platform').style.display=seg.venue==='stream'?'':'none'; }
+bindSeg('seg-tipo','tipo',syncForm); bindSeg('seg-venue','venue',syncForm); bindSeg('seg-first','first');
+function openAdd(){ document.getElementById('add-status').textContent=''; document.getElementById('a-date').value=new Date().toISOString().slice(0,10); syncForm(); document.getElementById('add-overlay').classList.add('open'); }
+function closeAdd(){ document.getElementById('add-overlay').classList.remove('open'); }
+const val=id=>document.getElementById(id).value.trim();
+function saveAdd(){
+  const st=document.getElementById('add-status');
+  if(!val('a-title')||!val('a-date')){ st.textContent='Título e data são obrigatórios.'; return; }
+  const [y,mo,d]=val('a-date').split('-');
+  const s=seg.tipo==='serie';
+  if(s&&val('a-seasons')&&!parseSeasons(val('a-seasons')).length){ st.textContent='Temporadas: use 1-3 ou 1,2,4.'; return; }
+  const maxId=Math.max(0,...all().map(m=>m.id));
+  custom.push({id:maxId+1,tipo:seg.tipo,title:val('a-title'),original_title:val('a-orig'),year:val('a-year')?+val('a-year'):'',director:val('a-dir'),date_watched:`${d}/${mo}/${y}`,venue:seg.venue,platform:seg.venue==='stream'?val('a-platform'):'',first_watch:seg.first==='1',runtime:!s&&val('a-runtime')?+val('a-runtime'):'',seasons_watched:s?val('a-seasons'):'',seasons_total:s&&val('a-stotal')?+val('a-stotal'):'',genre:val('a-genre'),country:val('a-country'),with:val('a-with')});
+  persist();
+  ['a-with','a-title','a-orig','a-year','a-dir','a-genre','a-country','a-platform','a-runtime','a-seasons','a-stotal'].forEach(i=>document.getElementById(i).value='');
+  closeAdd(); render(document.querySelector('.view.active').id.slice(5));
+}
+function exportJSON(){ const st=document.getElementById('export-status');
+  if(!custom.length){ st.textContent='Nenhuma entrada nova neste navegador.'; return; }
+  const txt=custom.map(m=>'  '+JSON.stringify(m)).join(',\n');
+  (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>st.textContent=custom.length+' entradas copiadas. Cole no array MEDIA.',()=>{ st.textContent='Não consegui copiar; veja o console.'; console.log(txt); }); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeModal(); closeAdd(); } });
+render('dashboard');
+</script>
+</body></html>
