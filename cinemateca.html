@@ -788,7 +788,7 @@ const MEDIA = [
   {"id":9,"tipo":"filme","title":"Ainda Estou Aqui","original_title":"Ainda Estou Aqui","year":2024,"director":"Walter Salles","date_watched":"17/10/2026","venue":"aviao","platform":"","first_watch":true,"runtime":137,"seasons_watched":"","seasons_total":"","genre":"Drama","country":"Brasil/França","with":""},
   {"id":10,"tipo":"filme","title":"Me Chame Pelo Seu Nome","original_title":"Call Me by Your Name","year":2017,"director":"Luca Guadagnino","date_watched":"22/10/2026","venue":"aviao","platform":"","first_watch":true,"runtime":132,"seasons_watched":"","seasons_total":"","genre":"Romance","country":"Itália/França/Brasil/EUA","with":""},
   {"id":11,"tipo":"filme","title":"Dia D","original_title":"Disclosure Day","year":2026,"director":"Steven Spielberg","date_watched":"22/10/2026","venue":"aviao","platform":"","first_watch":true,"runtime":145,"seasons_watched":"","seasons_total":"","genre":"Ficção científica","country":"EUA","with":""},
-  {"id":12,"tipo":"serie","title":"Pessoas Normais","original_title":"Normal People","year":2020,"director":"Lenny Abrahamson, Hettie Macdonald","date_watched":"07/11/2026","venue":"stream","platform":"","first_watch":true,"runtime":"","seasons_watched":"","seasons_total":1,"ep_season":1,"ep_watched":2,"ep_total":12,"genre":"Drama","country":"Irlanda/Reino Unido","with":""}
+  {"id":12,"tipo":"serie","title":"Pessoas Normais","original_title":"Normal People","year":2020,"director":"Lenny Abrahamson, Hettie Macdonald","date_watched":"07/11/2026","venue":"stream","platform":"","first_watch":true,"runtime":"","seasons_watched":"","seasons_total":1,"ep_season":1,"ep_watched":2,"ep_total":12,"ep_log":[{"s":1,"e":1,"d":"06/11/2026"},{"s":1,"e":2,"d":"07/11/2026"}],"genre":"Drama","country":"Irlanda/Reino Unido","with":""}
 ];
 
 const LS_KEY='tori_custom_media';
@@ -800,6 +800,10 @@ function all(){ return MEDIA.concat(custom); }
 const esc=s=>(s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const parseD=s=>{ const [d,m,y]=s.split('/').map(Number); return new Date(y,m-1,d); };
 const yr=m=>parseD(m.date_watched).getFullYear();
+// Séries: ep_log = [{s:temporada,e:episódio,d:"dd/mm/aaaa"}]. O último episódio define progresso e data.
+function epSorted(m){ return (Array.isArray(m.ep_log)?m.ep_log:[]).slice().sort((a,b)=>parseD(a.d)-parseD(b.d)||a.s-b.s||a.e-b.e); }
+function normEp(m){ const l=epSorted(m); if(!l.length) return; const z=l[l.length-1]; m.ep_season=z.s; m.ep_watched=z.e; m.date_watched=z.d; }
+MEDIA.forEach(normEp); custom.forEach(normEp);
 const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
 function count(arr,fn){ const o={}; arr.forEach(x=>{ const k=fn(x); if(k) o[k]=(o[k]||0)+1; }); return o; }
 const sortE=o=>Object.entries(o).sort((a,b)=>b[1]-a[1]);
@@ -897,6 +901,8 @@ function openModal(k){
   const rows=[['Tipo',m.tipo==='filme'?'Filme':'Série'],[m.tipo==='filme'?'Diretor':'Criador',m.director],['Ano',m.year],['Visto em',m.date_watched],['Onde',where(m)],['Primeira vez',m.first_watch?'Sim':'Não, revisão'],['Vezes que vi',timesSeen(m)+'x'],
     m.tipo==='filme'?['Duração',m.runtime?m.runtime+' min':'—']:['Temporadas',seasonsLabel(m)],['Em andamento',m.tipo==='serie'?epLabel(m):''],['Gênero',m.genre],['País',m.country],['Com quem',m.with]];
   let html=rows.filter(r=>r[1]!==''&&r[1]!=null).map(r=>`<div class="modal-row"><div class="modal-key">${r[0]}</div><div class="modal-val">${esc(r[1])}</div></div>`).join('');
+  const lg=epSorted(m);
+  if(lg.length) html+=`<div class="modal-row"><div class="modal-key">Começou em</div><div class="modal-val">${esc(lg[0].d)}</div></div><div class="modal-row"><div class="modal-key">Episódios</div><div class="modal-val">${lg.slice().reverse().map(x=>'T'+x.s+'E'+String(x.e).padStart(2,'0')+' · '+esc(x.d)).join('<br>')}</div></div>`;
   if(k[0]==='c') html+=`<div style="margin-top:14px"><button class="filter-tab" onclick="delCustom(${+k.slice(1)})">Remover este registro</button></div>`;
   document.getElementById('modal-body').innerHTML=html;
   document.getElementById('modal-overlay').classList.add('open');
@@ -921,7 +927,7 @@ function saveAdd(){
   const s=seg.tipo==='serie';
   if(s&&val('a-seasons')&&!parseSeasons(val('a-seasons')).length){ st.textContent='Temporadas: use 1-3 ou 1,2,4.'; return; }
   const maxId=Math.max(0,...all().map(m=>m.id));
-  custom.push({id:maxId+1,tipo:seg.tipo,title:val('a-title'),original_title:val('a-orig'),year:val('a-year')?+val('a-year'):'',director:val('a-dir'),date_watched:`${d}/${mo}/${y}`,venue:seg.venue,platform:seg.venue==='stream'?val('a-platform'):'',first_watch:seg.first==='1',runtime:!s&&val('a-runtime')?+val('a-runtime'):'',seasons_watched:s?val('a-seasons'):'',seasons_total:s&&val('a-stotal')?+val('a-stotal'):'',genre:val('a-genre'),country:val('a-country'),with:val('a-with'),ep_season:s&&val('a-epwatched')?(+val('a-epseason')||1):'',ep_watched:s&&val('a-epwatched')?+val('a-epwatched'):'',ep_total:s&&val('a-epwatched')&&val('a-eptotal')?+val('a-eptotal'):''});
+  custom.push({id:maxId+1,tipo:seg.tipo,title:val('a-title'),original_title:val('a-orig'),year:val('a-year')?+val('a-year'):'',director:val('a-dir'),date_watched:`${d}/${mo}/${y}`,venue:seg.venue,platform:seg.venue==='stream'?val('a-platform'):'',first_watch:seg.first==='1',runtime:!s&&val('a-runtime')?+val('a-runtime'):'',seasons_watched:s?val('a-seasons'):'',seasons_total:s&&val('a-stotal')?+val('a-stotal'):'',genre:val('a-genre'),country:val('a-country'),with:val('a-with'),ep_season:s&&val('a-epwatched')?(+val('a-epseason')||1):'',ep_watched:s&&val('a-epwatched')?+val('a-epwatched'):'',ep_total:s&&val('a-epwatched')&&val('a-eptotal')?+val('a-eptotal'):'',ep_log:s&&val('a-epwatched')?[{s:+val('a-epseason')||1,e:+val('a-epwatched'),d:`${d}/${mo}/${y}`}]:[]});
   persist();
   ['a-with','a-title','a-orig','a-year','a-dir','a-genre','a-country','a-platform','a-runtime','a-seasons','a-stotal','a-epseason','a-epwatched','a-eptotal'].forEach(i=>document.getElementById(i).value='');
   closeAdd(); render(document.querySelector('.view.active').id.slice(5));
