@@ -702,6 +702,7 @@ textarea.f-input{height:72px;padding:10px 13px;resize:vertical}
     </div>
     <div class="view" id="view-pecas">
       <div class="section-header"><span class="section-title">Peças</span><span class="section-sub" id="pecas-count"></span></div>
+      <div class="filter-tabs" id="pecas-tipos"></div>
       <div class="filter-tabs" id="pecas-years"></div>
       <div class="table-wrap table-scroll">
         <div class="table-header-row"><div class="th col-num">#</div><div class="th col-date">Quando</div><div class="th col-title">Peça</div><div class="th col-author">Encenação</div><div class="th col-theatre">Teatro</div><div class="th col-city">Cidade</div><div class="th col-pages">Min</div></div>
@@ -732,7 +733,10 @@ textarea.f-input{height:72px;padding:10px 13px;resize:vertical}
   <div class="add-panel">
     <div class="add-title">Nova peça</div>
     <div class="add-sub">Fica salva neste navegador. Use "Copiar entradas novas" para passar ao arquivo.</div>
-    <div class="f-group"><label class="f-label">Peça</label><input class="f-input" id="a-title"></div>
+    <div class="f-row">
+      <div class="f-group"><label class="f-label">Peça</label><input class="f-input" id="a-title"></div>
+      <div class="f-group"><label class="f-label">Tipo</label><select class="f-input" id="a-tipo"><option>teatro</option><option>dança</option><option>infantil</option></select></div>
+    </div>
     <div class="f-row">
       <div class="f-group"><label class="f-label">Autor</label><input class="f-input" id="a-author"></div>
       <div class="f-group"><label class="f-label">Encenação</label><input class="f-input" id="a-director"></div>
@@ -801,7 +805,7 @@ const PLAYS = [
  theatre:"Odéon – Théâtre de l'Europe",address:"Place de l'Odéon, 6e",city:"Paris",country:"França",
  season:"30/10/2026 – 27/11/2026 (Festival d'Automne)",runtime:105,language:"Sem palavras",seen:"2026-11",confidence:"certo",
  notes:"Criação 2026 (Montpellier e Romaeuropa em outubro, depois Odéon no Festival d'Automne). Espetáculo quase sem palavras, a partir do Faust I: Faust e Margarida num asilo, entre máquinas e cinzas. Duração anunciada de 1h45 (estimativa); a crítica da La Terrasse fala em pouco mais de uma hora. Depois segue para Bolonha, Milão e o Théâtre de Vidy, Lausanne."},
-{title:"La Vie magique de Sigismond",author:"Sébastien Mossière",written:"2026",director:"Sébastien Mossière",
+{title:"La Vie magique de Sigismond",tipo:"infantil",author:"Sébastien Mossière",written:"2026",director:"Sébastien Mossière",
  cast:"Sébastien Mossière (Sigismond Dubuffet), com participação do público",
  theatre:"Lucernaire – Théâtre Noir",address:"53 rue Notre-Dame-des-Champs, 6e",city:"Paris",country:"França",
  season:"09/09/2026 – 10/01/2027",runtime:60,language:"Francês",seen:"2026-11",confidence:"certo",
@@ -813,13 +817,13 @@ const PLAYS = [
  theatre:"Comédie-Française – Salle Richelieu",address:"Place Colette, 1er",city:"Paris",country:"França",
  season:"27/04/2019 – 03/07/2019",runtime:140,language:"Francês",seen:"2019-06",confidence:"provável",
  notes:"Identificação provável: era a Electra em cartaz em Paris em junho de 2019. As duas tragédias de Eurípides encenadas em sequência, sem intervalo, primeira entrada das duas peças no repertório da Comédie-Française. Depois do Paris, foi a Epidauro (26 e 27/07/2019), a primeira vez da trupe no teatro antigo. Duração entre 2h10 e 2h25 conforme a fonte."},
-{title:"Nature of a Fall",author:"Adi Boutrous",written:"2026",director:"Adi Boutrous",
+{title:"Nature of a Fall",tipo:"dança",author:"Adi Boutrous",written:"2026",director:"Adi Boutrous",
  cast:"Ido Barak, Neshama Bazer, Naomi Ben David, Adi Boutrous, Stav Struz Boutrous, Uri Dicker",
  credits:"Coreografia, cenografia e trilha: Adi Boutrous · Luz: Ofer Laufer · Dramaturgia: Yael Venezia · Figurinos: Stav Struz Boutrous",
  theatre:"Théâtre de la Ville – Les Abbesses",address:"31 rue des Abbesses, 18e",city:"Paris",country:"França",
  season:"04/02/2026 – 07/02/2026",runtime:60,language:"Dança",seen:"2026-02",confidence:"provável",
  notes:"Dança. Identificação provável: única companhia israelense nas Abbesses (Montmartre) no inverno 2025-26. Criação mundial, encomenda do Théâtre de la Ville. Seis bailarinos; a violência humana em ciclo e a renovação depois da queda, como as folhas no outono. Boutrous é israelense, árabe e cristão."},
-{title:"Onbashira Diptych: Skid / Thr(o)ugh",author:"Damien Jalet",written:"2016–2017",director:"Damien Jalet",
+{title:"Onbashira Diptych: Skid / Thr(o)ugh",tipo:"dança",author:"Damien Jalet",written:"2016–2017",director:"Damien Jalet",
  cast:"Ballet du Grand Théâtre de Genève (19 bailarinos em Skid, 11 em Thr(o)ugh)",
  credits:"Cenografia: Jim Hodges, Carlos Marques da Cruz · Figurinos: Jean-Paul Lespagnard · Música: Christian Fennesz e Marihiko Hara (Skid), Fennesz (Thr(o)ugh) · Luz: Joakim Brink, Jan Maertens",
  company:"Ballet du Grand Théâtre de Genève",
@@ -831,6 +835,8 @@ const PLAYS = [
 const LS_KEY='tori_custom_teatro';
 let custom=[]; try{ custom=JSON.parse(localStorage.getItem(LS_KEY)||'[]'); }catch(e){ custom=[]; }
 function persist(){ try{ localStorage.setItem(LS_KEY,JSON.stringify(custom)); }catch(e){} }
+const TIPOS=['teatro','dança','infantil'];
+const tipoOf=p=>p.tipo||'teatro';
 const all=()=>PLAYS.concat(custom);
 const esc=s=>(s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const MS=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -839,7 +845,7 @@ const seenLabel=p=>{ const [y,m]=String(p.seen).split('-'); return m?MS[+m-1]+'/
 const seenSort=p=>String(p.seen).padEnd(7,'-00');
 const count=(a,fn)=>{ const o={}; a.forEach(x=>{ (fn(x)||[]).forEach(k=>{ if(k) o[k]=(o[k]||0)+1; }); }); return o; };
 const sortE=o=>Object.entries(o).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
-let q='', yF='all';
+let q='', yF='all', tF='all';
 
 const TITLES={dashboard:'Dashboard',pecas:'Peças',encenadores:'Encenadores',teatros:'Teatros'};
 function showView(v,el){
@@ -852,7 +858,7 @@ function showView(v,el){
 }
 function onSearch(t){ q=(t||'').trim().toLowerCase(); const v=document.querySelector('.view.active').id.slice(5);
   if(v==='dashboard'&&q){ showView('pecas',document.querySelectorAll('.nav-item')[1]); } else render(v); }
-const match=p=>!q||[p.title,p.original,p.author,p.director,p.cast,p.theatre,p.city,p.notes,p.company].join(' ').toLowerCase().includes(q);
+const match=p=>!q||[tipoOf(p),p.title,p.original,p.author,p.director,p.cast,p.theatre,p.city,p.notes,p.company].join(' ').toLowerCase().includes(q);
 function render(v){ ({dashboard:rDash,pecas:rPecas,encenadores:rEnc,teatros:rTeatro})[v](); footer(); }
 function footer(){ const A=all(), ys=A.map(yr); document.getElementById('sidebarFooter').textContent=A.length+' peças'+(A.length?', '+Math.min(...ys)+'–'+Math.max(...ys):''); }
 function rank(entries,el){ const mx=entries.length?entries[0][1]:1;
@@ -864,7 +870,7 @@ function rDash(){
   const th=new Set(A.map(p=>p.theatre)), ci=count(A,p=>[p.city]);
   const mins=A.reduce((s,p)=>s+(+p.runtime||0),0);
   document.getElementById('st-pecas').textContent=A.length;
-  document.getElementById('st-pecas-d').textContent=A.filter(p=>p.confidence==='provável').length+' com montagem a confirmar';
+  const ct=count(A,p=>[tipoOf(p)]);document.getElementById('st-pecas-d').textContent=TIPOS.filter(t=>ct[t]).map(t=>t+' '+ct[t]).join(', ');
   document.getElementById('st-teatros').textContent=th.size;
   const odeon=A.filter(p=>/Odéon/.test(p.theatre)).length;
   document.getElementById('st-teatros-d').textContent=odeon?'Odéon: '+odeon+' visitas':'';
@@ -880,9 +886,11 @@ function keyed(){ return all().map((p,i)=>Object.assign({_key:i<PLAYS.length?'m'
 function rPecas(){
   const base=keyed(); const ys=[...new Set(base.map(yr))].sort();
   document.getElementById('pecas-years').innerHTML=[['all','Todos'],...ys.map(y=>[String(y),String(y)])].map(([v,l])=>`<button class="filter-tab${v===yF?' active':''}" onclick="yF='${v}';rPecas()">${l}</button>`).join('');
-  const L=base.filter(p=>(yF==='all'||String(yr(p))===yF)&&match(p)).sort((a,b)=>seenSort(b).localeCompare(seenSort(a)));
+  const cT=count(base,p=>[tipoOf(p)]);
+  document.getElementById('pecas-tipos').innerHTML=[['all','Tudo ('+base.length+')'],...TIPOS.filter(t=>cT[t]).map(t=>[t,t[0].toUpperCase()+t.slice(1)+' ('+cT[t]+')'])].map(([v,l])=>`<button class="filter-tab${v===tF?' active':''}" onclick="tF='${v}';rPecas()">${l}</button>`).join('');
+  const L=base.filter(p=>(tF==='all'||tipoOf(p)===tF)&&(yF==='all'||String(yr(p))===yF)&&match(p)).sort((a,b)=>seenSort(b).localeCompare(seenSort(a)));
   document.getElementById('pecas-count').textContent=L.length+(L.length===1?' peça':' peças');
-  document.getElementById('pecas-tbody').innerHTML=L.length?L.map((p,i)=>`<div class="book-row" tabindex="0" onclick="openModal('${p._key}')" onkeydown="if(event.key==='Enter')openModal('${p._key}')"><div class="td col-num">${i+1}</div><div class="td col-date">${seenLabel(p)}</div><div class="td col-title">${esc(p.title)}${p.confidence==='provável'?'<span class="flag" title="Montagem a confirmar">?</span>':''}</div><div class="td col-author">${esc(p.director)}</div><div class="td col-theatre">${esc(p.theatre)}</div><div class="td col-city">${esc(p.city)}</div><div class="td col-pages">${p.runtime||''}</div></div>`).join(''):'<div class="empty">Nenhuma peça encontrada. Ajuste a busca ou adicione uma no +.</div>';
+  document.getElementById('pecas-tbody').innerHTML=L.length?L.map((p,i)=>`<div class="book-row" tabindex="0" onclick="openModal('${p._key}')" onkeydown="if(event.key==='Enter')openModal('${p._key}')"><div class="td col-num">${i+1}</div><div class="td col-date">${seenLabel(p)}</div><div class="td col-title">${esc(p.title)}${tipoOf(p)!=='teatro'?`<span class="flag" style="color:var(--text-muted)">${tipoOf(p)}</span>`:''}${p.confidence==='provável'?'<span class="flag" title="Montagem a confirmar">?</span>':''}</div><div class="td col-author">${esc(p.director)}</div><div class="td col-theatre">${esc(p.theatre)}</div><div class="td col-city">${esc(p.city)}</div><div class="td col-pages">${p.runtime||''}</div></div>`).join(''):'<div class="empty">Nenhuma peça encontrada. Ajuste a busca ou adicione uma no +.</div>';
 }
 function rEnc(){ rank(sortE(count(all().filter(match),p=>String(p.director||'').split(/,| e /).map(s=>s.trim()))),'rank-enc'); }
 function rTeatro(){ rank(sortE(count(all().filter(match),p=>[p.theatre+' · '+p.city])),'rank-teatro'); }
@@ -890,7 +898,7 @@ function rTeatro(){ rank(sortE(count(all().filter(match),p=>[p.theatre+' · '+p.
 const get=k=>k[0]==='m'?PLAYS[+k.slice(1)]:custom[+k.slice(1)];
 function openModal(k){
   const p=get(k), h=m=>m?Math.floor(m/60)+'h'+String(m%60).padStart(2,'0'):'';
-  const rows=[['Autor',p.author+(p.written?' ('+p.written+')':'')],['Título original',p.original],['Tradução',p.translation],['Encenação',p.director],['Ficha',p.credits],['Companhia',p.company],['Elenco',p.cast],
+  const rows=[['Tipo',tipoOf(p)[0].toUpperCase()+tipoOf(p).slice(1)],['Autor',p.author+(p.written?' ('+p.written+')':'')],['Título original',p.original],['Tradução',p.translation],['Encenação',p.director],['Ficha',p.credits],['Companhia',p.company],['Elenco',p.cast],
     ['Teatro',p.theatre],['Endereço',p.address],['Cidade',[p.city,p.country].filter(Boolean).join(', ')],['Temporada',p.season],['Duração',h(+p.runtime)],['Língua',p.language],['Quando vi',seenLabel(p)],
     ['Montagem',p.confidence==='provável'?'Provável, a confirmar':'Confirmada']].filter(r=>r[1]);
   document.getElementById('modal').innerHTML=`<div class="modal-header"><button class="modal-close" onclick="closeModal()" aria-label="Fechar">×</button><div class="modal-title">${esc(p.title)}</div><div class="modal-orig">${esc(p.director)} · ${esc(p.theatre)}</div></div>
@@ -909,7 +917,7 @@ function closeAdd(){ document.getElementById('add-overlay').classList.remove('op
 function saveAdd(){
   const st=document.getElementById('add-status');
   if(!val('a-title')||!val('a-seen')){ st.className='add-status err'; st.textContent='Preencha a peça e o mês.'; return; }
-  custom.push({title:val('a-title'),author:val('a-author'),director:val('a-director'),cast:val('a-cast'),theatre:val('a-theatre'),city:val('a-city'),
+  custom.push({title:val('a-title'),tipo:val('a-tipo'),author:val('a-author'),director:val('a-director'),cast:val('a-cast'),theatre:val('a-theatre'),city:val('a-city'),
     country:'',season:'',runtime:+val('a-runtime')||'',language:'',seen:val('a-seen'),confidence:'certo',notes:val('a-notes')});
   persist(); ['a-title','a-author','a-director','a-cast','a-theatre','a-runtime','a-notes'].forEach(id=>document.getElementById(id).value='');
   st.className='add-status ok'; st.textContent='Peça salva.'; render(document.querySelector('.view.active').id.slice(5));
