@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meu Teatro</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TORI BRAND SYSTEM
+   Primary:   #2A666E  (Pantone 7715 C 100%)
+   Tint:      #AAC6C8  (Pantone 7715 C 30%)
+   Green:     #C0E85F  (Pantone 2296 C)
+   Coral:     #F07F79  (Pantone 2029 C)
+   Gold:      #F0C068  (Pantone 228 C)
+   Font:      Bricolage Grotesque / Verdana (fallback)
+============================================================ */
+:root {
+  --tori-primary:   #2A666E;
+  --tori-tint:      #AAC6C8;
+  --tori-green:     #C0E85F;
+  --tori-coral:     #F07F79;
+  --tori-gold:      #F0C068;
+  --tori-dark:      #1a3f44;
+  --tori-darker:    #0f2528;
+  --bg:             #f4f7f7;
+  --surface:        #ffffff;
+  --surface2:       #edf3f3;
+  --border:         #d4e2e3;
+  --text:           #1a3f44;
+  --text-muted:     #5a8a8f;
+  --text-light:     #8ab4b8;
+  --radius:         12px;
+  --radius-sm:      8px;
+  --shadow:         0 2px 12px rgba(42,102,110,0.08);
+  --shadow-md:      0 4px 24px rgba(42,102,110,0.12);
+  --font:           'Bricolage Grotesque', Verdana, sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed; left:0; top:0; bottom:0;
+  width: 220px;
+  background: var(--tori-darker);
+  display: flex; flex-direction: column;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.sidebar-logo {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid rgba(170,198,200,0.15);
+}
+
+.sidebar-logo .logo-mark {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 4px;
+}
+
+.logo-bulls {
+  display: flex; gap: 3px;
+}
+.logo-bull {
+  width: 18px; height: 14px;
+  background: var(--tori-tint);
+  border-radius: 2px 6px 2px 2px;
+  position: relative;
+  clip-path: polygon(0 30%, 15% 0, 40% 0, 40% 20%, 100% 0, 100% 100%, 0 100%);
+}
+.logo-bull:first-child { background: var(--tori-primary); opacity: 0.8; }
+
+.logo-name {
+  font-size: 22px; font-weight: 800; color: #fff;
+  letter-spacing: 3px;
+}
+.logo-sub {
+  font-size: 9px; color: var(--tori-tint);
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding-left: 2px;
+}
+
+.sidebar-label {
+  font-size: 9px; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--tori-tint);
+  opacity: 0.6; padding: 20px 24px 8px;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 24px;
+  color: rgba(255,255,255,0.55);
+  cursor: pointer;
+  font-size: 13px; font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.nav-item:hover { color: #fff; background: rgba(170,198,200,0.08); }
+.nav-item.active {
+  color: var(--tori-green);
+  border-left-color: var(--tori-green);
+  background: rgba(192,232,95,0.08);
+}
+.nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 20px 24px;
+  border-top: 1px solid rgba(170,198,200,0.12);
+  font-size: 11px; color: rgba(170,198,200,0.4);
+}
+
+/* ── MAIN ── */
+.main {
+  margin-left: 220px;
+  min-height: 100vh;
+}
+
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+}
+
+.topbar-title {
+  font-size: 15px; font-weight: 700; color: var(--tori-primary);
+  letter-spacing: 0.3px;
+}
+
+.search-wrap {
+  position: relative;
+}
+.search-input {
+  width: 280px; height: 36px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 0 16px 0 38px;
+  font-family: var(--font);
+  font-size: 13px; color: var(--text);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-input:focus { border-color: var(--tori-primary); background: #fff; }
+.search-icon {
+  position: absolute; left: 12px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-light); font-size: 14px;
+}
+
+.content { padding: 32px; }
+
+/* ── SECTION HEADERS ── */
+.section-header {
+  display: flex; align-items: baseline; gap: 12px;
+  margin-bottom: 24px;
+}
+.section-title {
+  font-size: 22px; font-weight: 800; color: var(--tori-primary);
+  letter-spacing: -0.5px;
+}
+.section-sub {
+  font-size: 13px; color: var(--text-muted); font-weight: 400;
+}
+
+/* ── STAT CARDS ── */
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  position: relative; overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+.stat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.stat-card.c1::before { background: var(--tori-primary); }
+.stat-card.c2::before { background: var(--tori-green); }
+.stat-card.c3::before { background: var(--tori-gold); }
+.stat-card.c4::before { background: var(--tori-coral); }
+
+.stat-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.stat-value {
+  font-size: 36px; font-weight: 800; color: var(--tori-primary);
+  line-height: 1; margin-bottom: 4px;
+  letter-spacing: -1px;
+}
+.stat-detail {
+  font-size: 12px; color: var(--text-muted);
+}
+
+/* ── CHARTS GRID ── */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+.charts-grid.three { grid-template-columns: 2fr 1fr; }
+
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.chart-title {
+  font-size: 13px; font-weight: 700; color: var(--tori-primary);
+  letter-spacing: 0.3px; margin-bottom: 4px;
+}
+.chart-sub { font-size: 11px; color: var(--text-muted); margin-bottom: 20px; }
+.chart-wrap { position: relative; }
+
+/* ── RANKING LISTS ── */
+.rank-list { list-style: none; }
+.rank-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.rank-item:last-child { border-bottom: none; }
+.rank-num {
+  font-size: 11px; font-weight: 700; color: var(--tori-tint);
+  width: 22px; text-align: right; flex-shrink: 0;
+}
+.rank-bar-wrap { flex: 1; }
+.rank-name {
+  font-size: 13px; font-weight: 500; color: var(--text);
+  margin-bottom: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rank-bar {
+  height: 4px; border-radius: 2px;
+  background: var(--tori-tint); opacity: 0.5;
+  transition: width 0.8s ease;
+}
+.rank-bar.fill-1 { background: var(--tori-primary); opacity: 1; }
+.rank-bar.fill-2 { background: var(--tori-primary); opacity: 0.8; }
+.rank-bar.fill-3 { background: var(--tori-primary); opacity: 0.65; }
+.rank-count {
+  font-size: 12px; font-weight: 700; color: var(--tori-primary);
+  flex-shrink: 0; min-width: 28px; text-align: right;
+}
+
+/* ── YEAR FILTERS ── */
+.filter-tabs {
+  display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;
+}
+.filter-tab {
+  padding: 6px 16px; border-radius: 20px;
+  font-family: var(--font); font-size: 12px; font-weight: 600;
+  cursor: pointer; border: 1.5px solid var(--border);
+  background: var(--surface); color: var(--text-muted);
+  transition: all 0.2s;
+}
+.filter-tab:hover { border-color: var(--tori-primary); color: var(--tori-primary); }
+.filter-tab.active {
+  background: var(--tori-primary); border-color: var(--tori-primary);
+  color: #fff;
+}
+
+/* ── BOOK TABLE ── */
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.table-header-row {
+  display: flex; align-items: center; gap: 0;
+  background: var(--tori-darker);
+  padding: 0 20px;
+}
+.th {
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--tori-tint);
+  padding: 12px 8px; cursor: pointer; user-select: none;
+  display: flex; align-items: center; gap: 4px;
+}
+.th:hover { color: #fff; }
+.th.sorted { color: var(--tori-green); }
+
+.col-num   { width: 40px; flex-shrink: 0; }
+.col-date  { width: 90px; flex-shrink: 0; }
+.col-title { flex: 1; min-width: 0; }
+.col-author{ width: 170px; flex-shrink: 0; }
+.col-genre { width: 130px; flex-shrink: 0; }
+.col-lang  { width: 90px; flex-shrink: 0; }
+.col-pages { width: 60px; flex-shrink: 0; text-align: right; }
+.col-year  { width: 55px; flex-shrink: 0; }
+
+.book-row {
+  display: flex; align-items: center; gap: 0;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background 0.15s;
+}
+.book-row:last-child { border-bottom: none; }
+.book-row:nth-child(even) { background: #fafcfc; }
+.book-row:hover { background: #edf6f6; }
+
+.td {
+  font-size: 13px; padding: 10px 8px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.td.col-num { color: var(--text-light); font-size: 11px; }
+.td.col-date { color: var(--text-muted); font-size: 12px; }
+.td.col-title { color: var(--tori-primary); font-weight: 600; }
+.td.col-pages { text-align: right; color: var(--text-muted); font-size: 12px; }
+.td.col-year { color: var(--text-muted); font-size: 12px; }
+
+.genre-badge {
+  display: inline-block;
+  padding: 2px 8px; border-radius: 10px;
+  font-size: 10px; font-weight: 600;
+  background: var(--surface2); color: var(--tori-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.pagination {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  font-size: 12px; color: var(--text-muted);
+}
+.page-btns { display: flex; gap: 4px; }
+.page-btn {
+  width: 32px; height: 32px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 13px; font-weight: 600;
+  border: 1.5px solid var(--border); background: var(--surface);
+  color: var(--text-muted); font-family: var(--font);
+  transition: all 0.15s;
+}
+.page-btn:hover { border-color: var(--tori-primary); color: var(--tori-primary); }
+.page-btn.active {
+  background: var(--tori-primary); border-color: var(--tori-primary);
+  color: #fff;
+}
+.page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(15,37,40,0.7); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius);
+  width: 520px; max-height: 90vh; overflow-y: auto;
+  transform: translateY(20px); transition: transform 0.2s;
+  box-shadow: 0 20px 60px rgba(15,37,40,0.3);
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-header {
+  background: var(--tori-darker);
+  padding: 24px 28px;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.modal-title {
+  font-size: 18px; font-weight: 800; color: #fff;
+  line-height: 1.3; margin-bottom: 4px;
+}
+.modal-orig {
+  font-size: 12px; color: var(--tori-tint); font-style: italic;
+}
+.modal-body { padding: 24px 28px; }
+.modal-row {
+  display: flex; gap: 8px;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.modal-row:last-child { border-bottom: none; }
+.modal-key {
+  font-weight: 600; color: var(--text-muted); font-size: 11px;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  width: 110px; flex-shrink: 0; padding-top: 1px;
+}
+.modal-val { color: var(--text); }
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,0.1); border: none;
+  color: #fff; font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font); transition: background 0.2s;
+}
+.modal-close:hover { background: rgba(255,255,255,0.2); }
+.modal-header { position: relative; }
+
+/* ── YEAR DETAIL SECTION ── */
+.year-cards {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px;
+  margin-bottom: 32px;
+}
+.year-card {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 12px;
+  text-align: center; cursor: pointer;
+  transition: all 0.2s;
+}
+.year-card:hover { border-color: var(--tori-primary); }
+.year-card.active {
+  border-color: var(--tori-primary);
+  background: var(--tori-primary); color: #fff;
+}
+.year-card.active .year-num { color: #fff; }
+.year-card.active .year-count { color: var(--tori-green); }
+.year-num { font-size: 16px; font-weight: 800; color: var(--tori-primary); }
+.year-count { font-size: 22px; font-weight: 800; color: var(--tori-primary); margin: 4px 0; }
+.year-label { font-size: 10px; color: var(--text-muted); }
+
+/* ── VIEWS ── */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ── HEATMAP ── */
+.heatmap-grid {
+  display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px;
+  margin-top: 12px;
+}
+.heatmap-month {
+  border-radius: 4px; height: 52px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 600;
+  transition: transform 0.15s;
+  cursor: default;
+}
+.heatmap-month:hover { transform: scale(1.05); }
+.heat-0 { background: var(--surface2); color: var(--text-light); }
+.heat-1 { background: #d4eaec; color: var(--tori-primary); }
+.heat-2 { background: #aac6c8; color: var(--tori-dark); }
+.heat-3 { background: #6fa8ac; color: #fff; }
+.heat-4 { background: var(--tori-primary); color: #fff; }
+.heat-5 { background: var(--tori-dark); color: var(--tori-green); }
+.hm-count { font-size: 18px; font-weight: 800; line-height: 1; }
+.hm-label { font-size: 9px; opacity: 0.8; margin-top: 2px; }
+
+/* ── LANGUAGE FLAGS / DOTS ── */
+.lang-dot {
+  display: inline-block; width: 8px; height: 8px;
+  border-radius: 50%; margin-right: 6px; flex-shrink: 0;
+}
+
+/* ── RESPONSIVE scrollable table ── */
+.table-scroll { overflow-x: auto; }
+
+/* ── EMPTY STATE ── */
+.empty {
+  text-align: center; padding: 48px;
+  color: var(--text-muted); font-size: 14px;
+}
+
+/* ── PROGRESS BAR ── */
+.progress-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 8px;
+}
+.progress-label { font-size: 12px; width: 110px; flex-shrink: 0; color: var(--text); }
+.progress-bar-bg {
+  flex: 1; height: 8px; border-radius: 4px;
+  background: var(--surface2); overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%; border-radius: 4px;
+  background: var(--tori-primary);
+  transition: width 0.8s ease;
+}
+.progress-count {
+  font-size: 12px; font-weight: 700; color: var(--tori-primary);
+  width: 28px; text-align: right;
+}
+
+
+/* === MOBILE RESPONSIVE === */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed; bottom: 0; left: 0; right: 0; top: auto;
+    width: 100%; height: 58px; flex-direction: row;
+    border-top: 1px solid rgba(170,198,200,0.2); z-index: 200;
+  }
+  .sidebar-logo, .sidebar-label, .sidebar-footer { display: none; }
+  .nav-item {
+    flex: 1; flex-direction: column; gap: 2px;
+    padding: 6px 4px; font-size: 9px; letter-spacing: 0;
+    border-left: none; border-top: 3px solid transparent;
+    justify-content: center; align-items: center;
+  }
+  .nav-item.active { border-top-color: var(--tori-green); border-left: none; background: rgba(192,232,95,0.08); }
+  .nav-icon { font-size: 20px; width: auto; }
+  .main { margin-left: 0; padding-bottom: 66px; }
+  .topbar { padding: 0 16px; }
+  .search-input { width: 170px; font-size: 12px; }
+  .content { padding: 16px; }
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .stat-value { font-size: 28px; }
+  .charts-grid, .charts-grid.three { grid-template-columns: 1fr !important; }
+  .year-cards { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .col-genre, .col-lang, .col-year, .col-pages { display: none; }
+  .table-header-row .th.col-genre,
+  .table-header-row .th.col-lang,
+  .table-header-row .th.col-year,
+  .table-header-row .th.col-pages { display: none; }
+  .section-title { font-size: 18px; }
+  .heatmap-grid { grid-template-columns: repeat(6, 1fr); }
+  .modal { width: 95vw; }
+}
+
+/* === FAB ADD BUTTON === */
+.fab {
+  position: fixed; bottom: 78px; right: 18px;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--tori-primary); color: #fff;
+  font-size: 28px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 150;
+  box-shadow: 0 4px 20px rgba(42,102,110,0.45);
+  border: none; font-family: var(--font);
+  transition: transform 0.2s, background 0.2s;
+}
+.fab:hover { transform: scale(1.08); background: var(--tori-dark); }
+@media (min-width: 769px) { .fab { bottom: 28px; } }
+
+/* === ADD MODAL === */
+.add-overlay {
+  position: fixed; inset: 0; z-index: 600;
+  background: rgba(15,37,40,0.75); backdrop-filter: blur(4px);
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s;
+}
+.add-overlay.open { opacity: 1; pointer-events: all; }
+.add-panel {
+  background: var(--surface); border-radius: 20px 20px 0 0;
+  width: 100%; max-width: 560px; padding: 24px 22px 36px;
+  transform: translateY(40px); transition: transform 0.25s;
+  max-height: 90vh; overflow-y: auto;
+}
+.add-overlay.open .add-panel { transform: translateY(0); }
+@media (min-width: 769px) {
+  .add-overlay { align-items: center; }
+  .add-panel { border-radius: 16px; }
+}
+.add-title { font-size: 16px; font-weight: 800; color: var(--tori-primary); margin-bottom: 2px; }
+.add-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 18px; }
+.f-group { margin-bottom: 14px; }
+.f-label { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+  color: var(--text-muted); display: block; margin-bottom: 5px; }
+.f-input {
+  width: 100%; height: 40px; border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 0 13px; font-family: var(--font); font-size: 13px;
+  color: var(--text); background: var(--bg); outline: none; transition: border-color 0.2s;
+}
+.f-input:focus { border-color: var(--tori-primary); background: #fff; }
+input[type="date"] { color-scheme: light; }
+.f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btn-add {
+  width: 100%; height: 44px; border-radius: 10px;
+  background: var(--tori-primary); border: none;
+  color: #fff; font-family: var(--font); font-size: 14px; font-weight: 700;
+  cursor: pointer; margin-top: 4px; transition: background 0.2s;
+}
+.btn-add:hover { background: var(--tori-dark); }
+.btn-add:disabled { opacity: 0.5; cursor: default; }
+.add-status { font-size: 12px; text-align: center; min-height: 18px; margin-top: 8px; color: var(--text-muted); }
+.add-status.ok { color: var(--tori-primary); font-weight: 600; }
+.add-status.err { color: var(--tori-coral); }
+.preview-box { background: var(--surface2); border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
+.preview-title { font-size: 14px; font-weight: 700; color: var(--tori-primary); margin-bottom: 2px; }
+.preview-meta { font-size: 11px; color: var(--text-muted); }
+.step-row { display: flex; align-items: center; gap: 8px; font-size: 11px;
+  color: var(--text-muted); padding: 6px 10px; background: var(--surface2);
+  border-radius: 6px; margin-bottom: 6px; }
+.step-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+.step-dot.spin { background: var(--tori-primary); animation: spin-pulse 1s infinite; }
+.step-dot.ok { background: var(--tori-green); }
+@keyframes spin-pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+
+/* === EXTRA MOBILE POLISH === */
+@media (max-width: 768px) {
+  /* bigger touch targets */
+  .book-row { min-height: 52px; }
+  .filter-tab { height: 36px; font-size: 13px; }
+  .page-btn { width: 38px; height: 38px; }
+  /* better topbar on mobile */
+  .topbar-title { font-size: 13px; }
+  /* remove hover effects on touch */
+  .stat-card:hover { transform: none; box-shadow: var(--shadow); }
+  /* year cards smaller */
+  .year-card { padding: 12px 8px; }
+  .year-count { font-size: 18px; }
+  .year-num { font-size: 13px; }
+  /* fab above nav bar */
+  .fab { bottom: 72px; }
+  /* pull-down add panel handle */
+  .add-panel::before {
+    content: ''; display: block;
+    width: 40px; height: 4px; border-radius: 2px;
+    background: var(--border); margin: 0 auto 16px;
+  }
+  /* date input larger on mobile */
+  input[type="date"].f-input { font-size: 16px !important; height: 48px; }
+  /* chart cards less padding */
+  .chart-card { padding: 16px 14px; }
+  .rank-item { padding: 6px 0; }
+}
+
+
+.seg{display:flex;gap:6px}
+.seg button{flex:1;height:40px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface);color:var(--text-muted);font-family:var(--font);font-weight:600;font-size:13px;cursor:pointer}
+.seg button.on{background:var(--tori-primary);border-color:var(--tori-primary);color:#fff}
+.seg button:focus-visible,.filter-tab:focus-visible,.btn-add:focus-visible{outline:2px solid var(--tori-green);outline-offset:2px}
+
+.col-theatre{width:190px;flex-shrink:0}
+.col-city{width:100px;flex-shrink:0}
+.td.col-theatre,.td.col-city{color:var(--text-muted);font-size:12px}
+.flag{font-size:10px;font-weight:700;color:var(--tori-gold);margin-left:6px}
+.modal-cast{line-height:1.5}
+.modal-note{font-size:13px;line-height:1.55;color:var(--text);padding:14px 0 4px}
+.modal-actions{display:flex;gap:8px;margin-top:14px}
+.year-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.year-bar-row .y{width:44px;font-weight:700;color:var(--tori-primary);font-size:13px}
+.year-bar-row .b{flex:1;height:22px;background:var(--surface2);border-radius:6px;overflow:hidden}
+.year-bar-row .b i{display:block;height:100%;background:var(--tori-primary);border-radius:6px}
+.year-bar-row .n{width:22px;text-align:right;font-weight:700;color:var(--tori-primary);font-size:13px}
+textarea.f-input{height:72px;padding:10px 13px;resize:vertical}
+@media (max-width:768px){.col-theatre,.col-city,.table-header-row .th.col-theatre,.table-header-row .th.col-city{display:none}}
+@media (prefers-color-scheme:dark){
+ :root{--bg:#0f2528;--surface:#16343a;--surface2:#1d4047;--border:#2a5259;--text:#e4eeee;--text-muted:#9fc0c3;--text-light:#6f9599;color-scheme:dark}
+ .td.col-title,.section-title,.stat-value,.chart-title,.topbar-title,.add-title,.rank-count,.year-bar-row .y,.year-bar-row .n{color:#AAC6C8}
+ .book-row:nth-child(even){background:#183a40}.book-row:hover{background:#1f474e}
+ .f-input:focus,.search-input:focus{background:var(--surface)}
+ input[type="date"]{color-scheme:dark}
+}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo"><div class="logo-mark">
+    <span style="font-size:26px;">🎭</span>
+    <span class="logo-name" style="letter-spacing:1px;font-size:18px;">Teatro</span>
+  </div></div>
+  <div class="sidebar-label">Teatro</div>
+  <a class="nav-item active" onclick="showView('dashboard',this)"><span class="nav-icon">📊</span> Dashboard</a>
+  <a class="nav-item" onclick="showView('pecas',this)"><span class="nav-icon">🎭</span> Peças</a>
+  <a class="nav-item" onclick="showView('encenadores',this)"><span class="nav-icon">🎬</span> Encenadores</a>
+  <a class="nav-item" onclick="showView('teatros',this)"><span class="nav-icon">🏛️</span> Teatros</a>
+  <a class="nav-item" href="cinemateca.html"><span class="nav-icon">🎞️</span> Cinemateca</a>
+  <a class="nav-item" href="./"><span class="nav-icon">📚</span> Biblioteca</a>
+  <div class="sidebar-footer" id="sidebarFooter"></div>
+</aside>
+<div class="main">
+  <header class="topbar">
+    <span class="topbar-title" id="topbar-title">Dashboard</span>
+    <div class="search-wrap"><span class="search-icon">🔍</span>
+      <input type="text" class="search-input" placeholder="Buscar peça, autor, encenador, ator, teatro..." oninput="onSearch(this.value)"></div>
+  </header>
+  <div class="content">
+    <div class="view active" id="view-dashboard">
+      <div class="section-header"><span class="section-title">Visão Geral</span><span class="section-sub" id="dash-sub"></span></div>
+      <div class="stats-grid">
+        <div class="stat-card c1"><div class="stat-label">Peças</div><div class="stat-value" id="st-pecas">0</div><div class="stat-detail" id="st-pecas-d"></div></div>
+        <div class="stat-card c2"><div class="stat-label">Teatros</div><div class="stat-value" id="st-teatros">0</div><div class="stat-detail" id="st-teatros-d"></div></div>
+        <div class="stat-card c3"><div class="stat-label">Horas em cena</div><div class="stat-value" id="st-horas">0</div><div class="stat-detail" id="st-horas-d"></div></div>
+        <div class="stat-card c4"><div class="stat-label">Cidades</div><div class="stat-value" id="st-cidades">0</div><div class="stat-detail" id="st-cidades-d"></div></div>
+      </div>
+      <div class="charts-grid">
+        <div class="chart-card"><div class="chart-title">Por ano</div><div class="chart-sub">Peças vistas em cada ano</div><div id="bars-ano"></div></div>
+        <div class="chart-card"><div class="chart-title">Autores</div><div class="chart-sub">Dramaturgos na coleção</div><ul class="rank-list" id="rank-autor"></ul></div>
+      </div>
+    </div>
+    <div class="view" id="view-pecas">
+      <div class="section-header"><span class="section-title">Peças</span><span class="section-sub" id="pecas-count"></span></div>
+      <div class="filter-tabs" id="pecas-years"></div>
+      <div class="table-wrap table-scroll">
+        <div class="table-header-row"><div class="th col-num">#</div><div class="th col-date">Quando</div><div class="th col-title">Peça</div><div class="th col-author">Encenação</div><div class="th col-theatre">Teatro</div><div class="th col-city">Cidade</div><div class="th col-pages">Min</div></div>
+        <div id="pecas-tbody"></div>
+      </div>
+      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button class="filter-tab" onclick="exportJSON()">Copiar entradas novas (JSON)</button>
+        <span class="add-status" id="export-status"></span>
+      </div>
+    </div>
+    <div class="view" id="view-encenadores">
+      <div class="section-header"><span class="section-title">Encenadores</span><span class="section-sub">Quem dirigiu o que você viu</span></div>
+      <div class="chart-card"><ul class="rank-list" id="rank-enc"></ul></div>
+    </div>
+    <div class="view" id="view-teatros">
+      <div class="section-header"><span class="section-title">Teatros</span><span class="section-sub">Salas onde você esteve</span></div>
+      <div class="chart-card"><ul class="rank-list" id="rank-teatro"></ul></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal"></div>
+</div>
+
+<button class="fab" onclick="openAdd()" aria-label="Adicionar peça">+</button>
+<div class="add-overlay" id="add-overlay" onclick="if(event.target===this)closeAdd()">
+  <div class="add-panel">
+    <div class="add-title">Nova peça</div>
+    <div class="add-sub">Fica salva neste navegador. Use "Copiar entradas novas" para passar ao arquivo.</div>
+    <div class="f-group"><label class="f-label">Peça</label><input class="f-input" id="a-title"></div>
+    <div class="f-row">
+      <div class="f-group"><label class="f-label">Autor</label><input class="f-input" id="a-author"></div>
+      <div class="f-group"><label class="f-label">Encenação</label><input class="f-input" id="a-director"></div>
+    </div>
+    <div class="f-group"><label class="f-label">Elenco</label><input class="f-input" id="a-cast" placeholder="Separado por vírgula"></div>
+    <div class="f-row">
+      <div class="f-group"><label class="f-label">Teatro</label><input class="f-input" id="a-theatre"></div>
+      <div class="f-group"><label class="f-label">Cidade</label><input class="f-input" id="a-city" value="Paris"></div>
+    </div>
+    <div class="f-row">
+      <div class="f-group"><label class="f-label">Quando (mês)</label><input class="f-input" type="month" id="a-seen"></div>
+      <div class="f-group"><label class="f-label">Duração (min)</label><input class="f-input" type="number" id="a-runtime"></div>
+    </div>
+    <div class="f-group"><label class="f-label">Notas</label><textarea class="f-input" id="a-notes"></textarea></div>
+    <button class="btn-add" onclick="saveAdd()">Salvar peça</button>
+    <div class="add-status" id="add-status"></div>
+  </div>
+</div>
+
+<script>
+/* seen: "AAAA-MM" quando o mês é conhecido, "AAAA" quando só o ano.
+   confidence: "certo" | "provável" (identificação da montagem) */
+const PLAYS = [
+{title:"Ça ira (1) Fin de Louis",author:"Joël Pommerat",written:"2015",director:"Joël Pommerat",company:"Compagnie Louis Brouillard",
+ cast:"Saadia Bentaïeb, Agnès Berthon, Yannick Choirat, Eric Feldman, Philippe Frécon, Yvain Juillard, Gérard Potier e outros",
+ theatre:"Théâtre de la Porte Saint-Martin",address:"18 bd Saint-Martin, 10e",city:"Paris",country:"França",
+ season:"13/04/2019 – 28/07/2019",runtime:270,language:"Francês",seen:"2019-06",confidence:"certo",
+ notes:"Ficção política sobre o processo revolucionário de 1789 e o fim do reinado de Luís XVI. Criada em 2015; três Molières em 2016 (espetáculo de teatro público, encenação e autor francófono vivo). 4h30 com dois intervalos."},
+{title:"Un ennemi du peuple",original:"En folkefiende",author:"Henrik Ibsen",written:"1882",translation:"Éloi Recoing",director:"Jean-François Sivadier",
+ cast:"Nicolas Bouchaud (Tomas Stockmann), Sharif Andoura (Hovstad), Cyril Bothorel (Capitão Horster / Morten Kiil), Stephen Butel (Aslaksen), Cyprien Colombo, Vincent Guédon, Jeanne Lepers, Agnès Sourdillon",
+ theatre:"Odéon – Théâtre de l'Europe",address:"Place de l'Odéon, 6e",city:"Paris",country:"França",
+ season:"10/05/2019 – 15/06/2019",runtime:155,language:"Francês",seen:"2019-06",confidence:"certo",
+ notes:"Criada na MC2 Grenoble em março de 2019. O médico Stockmann denuncia a poluição das termas que sustentam a cidade e vira 'inimigo do povo'. Na cena da assembleia, as luzes da sala se acendem e Bouchaud interpela a plateia."},
+{title:"Fauves",author:"Wajdi Mouawad",written:"2019",director:"Wajdi Mouawad",
+ cast:"Ralph Amoussou e outros",
+ theatre:"La Colline – théâtre national (Grand Théâtre)",address:"15 rue Malte-Brun, 20e",city:"Paris",country:"França",
+ season:"09/05/2019 – 21/06/2019",runtime:225,language:"Francês",seen:"2019-06",confidence:"certo",
+ notes:"Estreia mundial em La Colline, onde ele era diretor. Cerca de 3h45 com intervalo."},
+{title:"Mary Said What She Said",author:"Darryl Pinckney",written:"2019",director:"Robert Wilson",
+ cast:"Isabelle Huppert (Maria Stuart), monólogo",
+ credits:"Encenação, cenário e luz: Robert Wilson · Música: Ludovico Einaudi · Figurinos: Jacques Reynaud",
+ theatre:"Théâtre de la Ville – Espace Cardin",address:"1 av. Gabriel, 8e",city:"Paris",country:"França",
+ season:"22/05/2019 – 06/07/2019",runtime:90,language:"Francês",seen:"2019-06",confidence:"certo",
+ notes:"Estreia mundial. Monólogo de Maria Stuart, rainha da Escócia, a partir de suas cartas, na última manhã antes da execução. Terceira parceria Wilson e Huppert (depois de Orlando, 1993, e Quartett, 2006)."},
+{title:"La Cerisaie",original:"Вишнёвый сад",author:"Anton Tchekhov",written:"1904",translation:"André Markowicz e Françoise Morvan",director:"Tiago Rodrigues",
+ cast:"Isabelle Huppert (Lioubov), Adama Diop (Lopakhine), Isabel Abreu (Charlotta), Tom Adjibi (Epikhodov), Nadim Ahmed (Iasha), Suzanne Aubert (Douniacha), Marcel Bozonnet (Firs) e outros",
+ theatre:"Odéon – Théâtre de l'Europe",address:"Place de l'Odéon, 6e",city:"Paris",country:"França",
+ season:"07/01/2022 – 20/02/2022",runtime:150,language:"Francês",seen:"2022-02",confidence:"certo",
+ notes:"Criada na Cour d'honneur do Palais des Papes, abrindo o Festival d'Avignon 2021. Produção do Festival d'Avignon. Adama Diop foi eleito melhor ator pelo Sindicato da Crítica (2021-22)."},
+{title:"Waiting for Godot",original:"En attendant Godot",author:"Samuel Beckett",written:"1952",director:"Jamie Lloyd",
+ cast:"Keanu Reeves (Estragon), Alex Winter (Vladimir), Brandon J. Dirden (Pozzo), Michael Patrick Thornton (Lucky)",
+ theatre:"Hudson Theatre (Broadway)",address:"141 West 44th Street",city:"Nova York",country:"EUA",
+ season:"13/09/2025 – 04/01/2026 (estreia 28/09/2025)",runtime:125,language:"Inglês",seen:"2025-10",confidence:"certo",
+ notes:"Estreia de Keanu Reeves na Broadway, reencontrando o parceiro de Bill & Ted. Produção The Jamie Lloyd Company, ATG e Bad Robot Live. 2h05 com um intervalo."},
+{title:"Six personnages en quête d'auteur",original:"Sei personaggi in cerca d'autore",author:"Luigi Pirandello",written:"1921",translation:"Fabrice Melquiot",director:"Marina Hands",
+ cast:"Thierry Hancisse, Coraly Zahonero, Clotilde de Bayser, Adeline d'Hermy, Christian Gonon, Serge Bagdassarian, Adrien Simion",
+ company:"Troupe de la Comédie-Française",
+ theatre:"Comédie-Française – Théâtre du Vieux-Colombier",address:"21 rue du Vieux-Colombier, 6e",city:"Paris",country:"França",
+ season:"20/01/2026 – 01/03/2026",runtime:120,language:"Francês",seen:"2026-01",confidence:"certo",
+ notes:"Reprise da montagem criada em 2024, primeira encenação de Marina Hands. Palco no centro da sala."},
+{title:"Faust. Fait, non dit.",author:"Romeo Castellucci, a partir de Goethe",written:"2026",director:"Romeo Castellucci",
+ cast:"",
+ theatre:"Odéon – Théâtre de l'Europe",address:"Place de l'Odéon, 6e",city:"Paris",country:"França",
+ season:"30/10/2026 – 27/11/2026 (Festival d'Automne)",runtime:105,language:"Sem palavras",seen:"2026-11",confidence:"certo",
+ notes:"Criação 2026 do Festival d'Automne, espetáculo praticamente sem texto: Faust em dois tempos (jovem e velho) num asilo. Depois segue para o Théâtre de Vidy, Lausanne."}
+];
+
+const LS_KEY='tori_custom_teatro';
+let custom=[]; try{ custom=JSON.parse(localStorage.getItem(LS_KEY)||'[]'); }catch(e){ custom=[]; }
+function persist(){ try{ localStorage.setItem(LS_KEY,JSON.stringify(custom)); }catch(e){} }
+const all=()=>PLAYS.concat(custom);
+const esc=s=>(s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const MS=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const yr=p=>+String(p.seen).slice(0,4);
+const seenLabel=p=>{ const [y,m]=String(p.seen).split('-'); return m?MS[+m-1]+'/'+y:y; };
+const seenSort=p=>String(p.seen).padEnd(7,'-00');
+const count=(a,fn)=>{ const o={}; a.forEach(x=>{ (fn(x)||[]).forEach(k=>{ if(k) o[k]=(o[k]||0)+1; }); }); return o; };
+const sortE=o=>Object.entries(o).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+let q='', yF='all';
+
+const TITLES={dashboard:'Dashboard',pecas:'Peças',encenadores:'Encenadores',teatros:'Teatros'};
+function showView(v,el){
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+  if(el) el.classList.add('active');
+  document.getElementById('topbar-title').textContent=TITLES[v];
+  render(v);
+}
+function onSearch(t){ q=(t||'').trim().toLowerCase(); const v=document.querySelector('.view.active').id.slice(5);
+  if(v==='dashboard'&&q){ showView('pecas',document.querySelectorAll('.nav-item')[1]); } else render(v); }
+const match=p=>!q||[p.title,p.original,p.author,p.director,p.cast,p.theatre,p.city,p.notes,p.company].join(' ').toLowerCase().includes(q);
+function render(v){ ({dashboard:rDash,pecas:rPecas,encenadores:rEnc,teatros:rTeatro})[v](); footer(); }
+function footer(){ const A=all(), ys=A.map(yr); document.getElementById('sidebarFooter').textContent=A.length+' peças'+(A.length?', '+Math.min(...ys)+'–'+Math.max(...ys):''); }
+function rank(entries,el){ const mx=entries.length?entries[0][1]:1;
+  document.getElementById(el).innerHTML=entries.length?entries.map(([k,n],i)=>`<li class="rank-item"><span class="rank-num">${i+1}</span><div class="rank-bar-wrap"><div class="rank-name">${esc(k)}</div><div class="rank-bar fill-${Math.min(i+1,3)}" style="width:${n/mx*100}%"></div></div><span class="rank-count">${n}</span></li>`).join(''):'<li class="empty">Nada encontrado</li>'; }
+
+function rDash(){
+  const A=all(), ys=A.map(yr);
+  document.getElementById('dash-sub').textContent=A.length?Math.min(...ys)+' – '+Math.max(...ys):'';
+  const th=new Set(A.map(p=>p.theatre)), ci=count(A,p=>[p.city]);
+  const mins=A.reduce((s,p)=>s+(+p.runtime||0),0);
+  document.getElementById('st-pecas').textContent=A.length;
+  document.getElementById('st-pecas-d').textContent=A.filter(p=>p.confidence==='provável').length+' com montagem a confirmar';
+  document.getElementById('st-teatros').textContent=th.size;
+  const odeon=A.filter(p=>/Odéon/.test(p.theatre)).length;
+  document.getElementById('st-teatros-d').textContent=odeon?'Odéon: '+odeon+' visitas':'';
+  document.getElementById('st-horas').textContent=Math.round(mins/60);
+  document.getElementById('st-horas-d').textContent='média de '+Math.round(mins/A.length)+' min por peça';
+  document.getElementById('st-cidades').textContent=Object.keys(ci).length;
+  document.getElementById('st-cidades-d').textContent=sortE(ci).map(([k,n])=>k+' '+n).join(', ');
+  const by=count(A,p=>[String(yr(p))]); const yrs=Object.keys(by).sort(); const mx=Math.max(...Object.values(by));
+  document.getElementById('bars-ano').innerHTML=yrs.map(y=>`<div class="year-bar-row"><span class="y">${y}</span><span class="b"><i style="width:${by[y]/mx*100}%"></i></span><span class="n">${by[y]}</span></div>`).join('');
+  rank(sortE(count(A,p=>[p.author.replace(/, a partir de.*/,'')])),'rank-autor');
+}
+function keyed(){ return all().map((p,i)=>Object.assign({_key:i<PLAYS.length?'m'+i:'c'+(i-PLAYS.length)},p)); }
+function rPecas(){
+  const base=keyed(); const ys=[...new Set(base.map(yr))].sort();
+  document.getElementById('pecas-years').innerHTML=[['all','Todos'],...ys.map(y=>[String(y),String(y)])].map(([v,l])=>`<button class="filter-tab${v===yF?' active':''}" onclick="yF='${v}';rPecas()">${l}</button>`).join('');
+  const L=base.filter(p=>(yF==='all'||String(yr(p))===yF)&&match(p)).sort((a,b)=>seenSort(b).localeCompare(seenSort(a)));
+  document.getElementById('pecas-count').textContent=L.length+(L.length===1?' peça':' peças');
+  document.getElementById('pecas-tbody').innerHTML=L.length?L.map((p,i)=>`<div class="book-row" tabindex="0" onclick="openModal('${p._key}')" onkeydown="if(event.key==='Enter')openModal('${p._key}')"><div class="td col-num">${i+1}</div><div class="td col-date">${seenLabel(p)}</div><div class="td col-title">${esc(p.title)}${p.confidence==='provável'?'<span class="flag" title="Montagem a confirmar">?</span>':''}</div><div class="td col-author">${esc(p.director)}</div><div class="td col-theatre">${esc(p.theatre)}</div><div class="td col-city">${esc(p.city)}</div><div class="td col-pages">${p.runtime||''}</div></div>`).join(''):'<div class="empty">Nenhuma peça encontrada. Ajuste a busca ou adicione uma no +.</div>';
+}
+function rEnc(){ rank(sortE(count(all().filter(match),p=>String(p.director||'').split(/,| e /).map(s=>s.trim()))),'rank-enc'); }
+function rTeatro(){ rank(sortE(count(all().filter(match),p=>[p.theatre+' · '+p.city])),'rank-teatro'); }
+
+const get=k=>k[0]==='m'?PLAYS[+k.slice(1)]:custom[+k.slice(1)];
+function openModal(k){
+  const p=get(k), h=m=>m?Math.floor(m/60)+'h'+String(m%60).padStart(2,'0'):'';
+  const rows=[['Autor',p.author+(p.written?' ('+p.written+')':'')],['Título original',p.original],['Tradução',p.translation],['Encenação',p.director],['Ficha',p.credits],['Companhia',p.company],['Elenco',p.cast],
+    ['Teatro',p.theatre],['Endereço',p.address],['Cidade',[p.city,p.country].filter(Boolean).join(', ')],['Temporada',p.season],['Duração',h(+p.runtime)],['Língua',p.language],['Quando vi',seenLabel(p)],
+    ['Montagem',p.confidence==='provável'?'Provável, a confirmar':'Confirmada']].filter(r=>r[1]);
+  document.getElementById('modal').innerHTML=`<div class="modal-header"><button class="modal-close" onclick="closeModal()" aria-label="Fechar">×</button><div class="modal-title">${esc(p.title)}</div><div class="modal-orig">${esc(p.director)} · ${esc(p.theatre)}</div></div>
+  <div class="modal-body">${rows.map(([a,b])=>`<div class="modal-row"><span class="modal-key">${a}</span><span class="modal-val${a==='Elenco'?' modal-cast':''}">${esc(b)}</span></div>`).join('')}
+  ${p.notes?`<div class="modal-note">${esc(p.notes)}</div>`:''}
+  ${k[0]==='c'?`<div class="modal-actions"><button class="filter-tab" onclick="delCustom(${k.slice(1)})">Remover</button></div>`:''}</div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(e){ if(!e||e.target.id==='modal-overlay') document.getElementById('modal-overlay').classList.remove('open'); }
+function delCustom(i){ if(!confirm('Remover esta peça?')) return; custom.splice(i,1); persist(); closeModal(); render(document.querySelector('.view.active').id.slice(5)); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeModal(); closeAdd(); } });
+
+const val=id=>document.getElementById(id).value.trim();
+function openAdd(){ document.getElementById('add-status').textContent=''; document.getElementById('a-seen').value=new Date().toISOString().slice(0,7); document.getElementById('add-overlay').classList.add('open'); }
+function closeAdd(){ document.getElementById('add-overlay').classList.remove('open'); }
+function saveAdd(){
+  const st=document.getElementById('add-status');
+  if(!val('a-title')||!val('a-seen')){ st.className='add-status err'; st.textContent='Preencha a peça e o mês.'; return; }
+  custom.push({title:val('a-title'),author:val('a-author'),director:val('a-director'),cast:val('a-cast'),theatre:val('a-theatre'),city:val('a-city'),
+    country:'',season:'',runtime:+val('a-runtime')||'',language:'',seen:val('a-seen'),confidence:'certo',notes:val('a-notes')});
+  persist(); ['a-title','a-author','a-director','a-cast','a-theatre','a-runtime','a-notes'].forEach(id=>document.getElementById(id).value='');
+  st.className='add-status ok'; st.textContent='Peça salva.'; render(document.querySelector('.view.active').id.slice(5));
+}
+function exportJSON(){
+  const st=document.getElementById('export-status'); const t=JSON.stringify(custom,null,1);
+  if(!custom.length){ st.textContent='Nenhuma entrada nova.'; return; }
+  navigator.clipboard.writeText(t).then(()=>{ st.className='add-status ok'; st.textContent=custom.length+' copiada(s). Cole no array PLAYS.'; },()=>{ st.textContent='Não deu para copiar.'; });
+}
+render('dashboard');
+</script>
+</body>
+</html>
