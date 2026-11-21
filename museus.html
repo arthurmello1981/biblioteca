@@ -788,23 +788,33 @@ const PLACES = {
   about:"Antiga bolsa de mercadorias reformada por Tadao Ando, aberta em 2021 com a coleção de François Pinault. Não tem acervo fixo em exposição: tudo gira por temporada."}
 };
 const VISITS = [
-{place:"khm",date:"2026-11-12",confidence:"provável",
+{place:"khm",date:"2026-11-12",confidence:"certo",
  items:[{kind:"acervo",title:"Gemäldegalerie e coleções permanentes",artists:"Bruegel, Ticiano, Velázquez, Vermeer, Rembrandt",
-  notes:"A confirmar: só o acervo, ou também alguma mostra? A grande temporária do outono, Tatort Ephesos. Kleopatra und Rom (20/10/2026 a 28/03/2027), fica na Neue Hofburg, não no prédio principal."}]},
-{place:"belvedere",date:"2026-11-14",confidence:"provável",
+  notes:"Só o acervo. Os artistas listados são os destaques da coleção, não uma lista do que foi visto."}]},
+{place:"belvedere",date:"2026-11-14",confidence:"certo",
  items:[{kind:"acervo",title:"Oberes Belvedere, coleção permanente",artists:"Gustav Klimt, Egon Schiele, Oskar Kokoschka",
-  notes:"A confirmar: Oberes (O Beijo) ou também o Unteres, que tem a temporária de Erika Giovanna Klien."}]},
+   notes:"Klimt (O Beijo, Judith), Schiele, Kokoschka e o Biedermeier vienense. Artistas listados são os destaques da coleção."},
+  {kind:"expo",title:"Erika Giovanna Klien. Alles ist Bewegung",start:"2026-09-18",end:"2027-01-31",artists:"Erika Giovanna Klien",
+   notes:"Unteres Belvedere. Grande individual de Klien (1900–1957), principal nome do Cinetismo vienense, que emigrou para Nova York em 1928."},
+  {kind:"expo",title:"Erna Rosenstein. Jenseits der Stille",end:"2027-01-10",artists:"Erna Rosenstein",confidence:"provável",
+   notes:"Unteres Belvedere. A confirmar se estava entre o que você viu; as datas publicadas são inconsistentes, o fim em 10/01/2027 é o mais provável."}]},
 {place:"bourse",date:"2026-11-15",confidence:"certo",
  items:[{kind:"expo",title:"Remember Me",start:"2026-10-07",end:"2027-01-18",artists:"Irving Penn, Raymond Depardon, Gustave Le Gray, Cindy Sherman, Dorothea Lange, Wolfgang Tillmans, Man Ray, Louise Lawler",
    curator:"Matthieu Humery",
    notes:"Bicentenário da fotografia: cerca de 700 obras de mais de 70 artistas da Coleção Pinault, da fotografia do século XIX à imagem contemporânea. Inclui a instalação Le Monde selon Penn, com mais de 400 fotos de Irving Penn, e uma série de Raymond Depardon."},
-  {kind:"expo",title:"The History of Tears",artists:"Barbara Kruger",curator:"Matthieu Humery",confidence:"provável",
-   notes:"Instalação in situ de Barbara Kruger na Rotonda e nas 24 vitrines. Em cartaz junto com Remember Me; a confirmar se você reparou."}]},
+  {kind:"expo",title:"The History of Tears",artists:"Barbara Kruger",curator:"Matthieu Humery",
+   notes:"Instalação in situ de Barbara Kruger na Rotonda e nas 24 vitrines, em cartaz junto com Remember Me."}]},
 {place:"orangerie",date:"2026-11-20",confidence:"certo",
  items:[{kind:"expo",title:"Monet, peindre le temps",start:"2026-09-30",end:"2027-01-25",artists:"Claude Monet",
    notes:"Centenário da morte de Monet (5/12/1926). Cerca de 40 pinturas sobre a relação da obra com o tempo (séries, instante, duração), sobretudo do Orsay e do Marmottan. Coorganizada com a Tate Modern, onde segue de 25/02 a 27/06/2027."},
-  {kind:"acervo",title:"Nymphéas (salas ovais)",artists:"Claude Monet",confidence:"provável",
-   notes:"Os oito grandes painéis doados por Monet ao Estado, instalados em 1927. Em 2027 o museu faz 100 anos."}]}
+  {kind:"expo",title:"Monet. Focus sur les archives familiales: Monet au travail",start:"2026-09-30",end:"2027-01-25",artists:"Claude Monet",
+   notes:"Sala Focus. Primeira parte do projeto sobre os arquivos da família: o processo de criação em fotografias e cartas."},
+  {kind:"expo",title:"Claude Monet, au fil de l'eau",start:"2026-09-30",end:"2027-02-15",artists:"Claude Monet",
+   notes:"Experiência em realidade virtual sobre Monet e a água, produzida pela Lucid Realities com os museus d'Orsay e de l'Orangerie."},
+  {kind:"acervo",title:"Nymphéas (salas ovais)",artists:"Claude Monet",
+   notes:"Os oito grandes painéis doados por Monet ao Estado, instalados em 1927. Em 2027 o museu faz 100 anos."},
+  {kind:"acervo",title:"Coleção Walter-Guillaume",artists:"Renoir, Cézanne, Matisse, Picasso, Modigliani, Soutine",
+   notes:"Coleção do marchand Paul Guillaume e de Domenica Walter, no andar de baixo."}]}
 ];
 
 const LS_KEY='tori_custom_museus';
