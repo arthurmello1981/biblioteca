@@ -792,7 +792,9 @@ const MEDIA = [
   {"id":11,"tipo":"filme","title":"Dia D","original_title":"Disclosure Day","year":2026,"director":"Steven Spielberg","date_watched":"22/10/2026","venue":"aviao","platform":"","first_watch":true,"runtime":145,"seasons_watched":"","seasons_total":"","genre":"Ficção científica","country":"EUA","with":""},
   {"id":12,"tipo":"serie","title":"Pessoas Normais","original_title":"Normal People","year":2020,"director":"Lenny Abrahamson, Hettie Macdonald","date_watched":"07/11/2026","venue":"stream","platform":"","first_watch":true,"runtime":"","seasons_watched":"","seasons_total":1,"ep_season":1,"ep_watched":2,"ep_total":12,"ep_log":[{"s":1,"e":1,"d":"06/11/2026"},{"s":1,"e":2,"d":"07/11/2026"}],"genre":"Drama","country":"Irlanda/Reino Unido","with":""},
   {"id":13,"tipo":"filme","title":"Stargate: A Chave para o Futuro da Humanidade","original_title":"Stargate","year":1994,"director":"Roland Emmerich","date_watched":"09/11/2026","venue":"aviao","platform":"","first_watch":false,"runtime":116,"seasons_watched":"","seasons_total":"","genre":"Ficção científica","country":"EUA/França","with":""},
-  {"id":14,"tipo":"filme","title":"Nuremberg","original_title":"Nuremberg","year":2025,"director":"James Vanderbilt","date_watched":"05/03/2026","venue":"aviao","platform":"","first_watch":true,"runtime":148,"seasons_watched":"","seasons_total":"","genre":"Drama","country":"EUA","with":""}
+  {"id":14,"tipo":"filme","title":"Nuremberg","original_title":"Nuremberg","year":2025,"director":"James Vanderbilt","date_watched":"05/03/2026","venue":"aviao","platform":"","first_watch":true,"runtime":148,"seasons_watched":"","seasons_total":"","genre":"Drama","country":"EUA","with":""},
+  {"id":15,"tipo":"filme","title":"Logan","original_title":"Logan","year":2017,"director":"James Mangold","date_watched":"21/11/2026","venue":"aviao","platform":"","first_watch":false,"prior_views":1,"runtime":137,"seasons_watched":"","seasons_total":"","genre":"Ação","country":"EUA","with":""},
+  {"id":16,"tipo":"filme","title":"Amores Materialistas","original_title":"Materialists","year":2025,"director":"Celine Song","date_watched":"21/11/2026","venue":"aviao","platform":"","first_watch":true,"runtime":116,"seasons_watched":"","seasons_total":"","genre":"Romance","country":"EUA","with":""}
 ];
 
 const LS_KEY='tori_custom_media';
@@ -826,7 +828,7 @@ function seasonsLabel(m){ const s=parseSeasons(m.seasons_watched); const e=epLab
   const t=s.length===1?'T'+s[0]:'T'+s[0]+'–'+s[s.length-1];
   const full=m.seasons_total?t+'/'+m.seasons_total:t;
   return e?full+' + '+e:full; }
-const timesSeen=m=>all().filter(x=>norm(x.title)===norm(m.title)).length;
+const timesSeen=m=>{ const g=all().filter(x=>norm(x.title)===norm(m.title)); return g.length+Math.max(0,...g.map(x=>x.prior_views||0)); }; // prior_views: vezes vistas antes de entrar no app
 
 const CH={}; const PAL=['#2A666E','#C0E85F','#F07F79','#F0C068','#AAC6C8','#1a3f44','#5a8a8f','#8ab4b8'];
 function mk(id,cfg){ if(CH[id]) CH[id].destroy(); const el=document.getElementById(id); if(el&&window.Chart) CH[id]=new Chart(el,cfg); }
@@ -866,7 +868,7 @@ function rDash(){
   mk('chVenue',{type:'doughnut',data:{labels:Object.keys(v),datasets:[{data:Object.values(v),backgroundColor:Object.keys(v).map(k=>({Cinema:PAL[0],Streaming:PAL[3],'Avião':PAL[2]})[k])}]},options:{maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom'}}}});
   const g=sortE(count(A,m=>m.genre));
   mk('chGenero',{type:'bar',data:{labels:g.map(x=>x[0]),datasets:[{data:g.map(x=>x[1]),backgroundColor:PAL[0],borderRadius:4}]},options:{indexAxis:'y',maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{precision:0}},y:{grid:{display:false}}}}});
-  const rw={}; A.forEach(m=>{ const k=norm(m.title); rw[k]=rw[k]||{t:m.title,n:0}; rw[k].n++; });
+  const rw={}; A.forEach(m=>{ const k=norm(m.title); rw[k]=rw[k]||{t:m.title,n:0,p:0}; rw[k].n++; rw[k].p=Math.max(rw[k].p,m.prior_views||0); }); Object.values(rw).forEach(x=>{ x.n+=x.p; });
   const list=Object.values(rw).filter(x=>x.n>1).sort((a,b)=>b.n-a.n);
   document.getElementById('rank-rewatch').innerHTML=list.length?rank(list.map(x=>[x.t,x.n])):'<li class="empty">Tudo inédito por enquanto</li>';
 }
